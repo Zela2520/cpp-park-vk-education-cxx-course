@@ -1,5 +1,6 @@
-# Deep_CPP
-Advanced course in c++
+[![Build Status](https://travis-ci.org/DaniilZelenko/Deep_CPP.svg?branch=matrix-hw)](https://travis-ci.org/DaniilZelenko/Deep_CPP) [![codecov](https://codecov.io/gh/DaniilZelenko/Deep_CPP/branch/matrix-hw/graph/badge.svg)](https://codecov.io/gh/DaniilZelenko/Deep_CPP)
+# TechnoPark-DeepCee
+
 
 ### Домашнее задание №2
 
