@@ -9,7 +9,7 @@ compiler: g++
 
 env:
   global:
-    - CODECOV_TOKEN=""
+    - CODECOV_TOKEN="-vlnkg-drMKOZJwb_trB1Q"
 
 install:
     - sudo apt-get update
