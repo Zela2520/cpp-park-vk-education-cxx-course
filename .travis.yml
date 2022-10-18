@@ -5,6 +5,9 @@ language: cpp
 
 os: linux
 
+arch:
+  - arm64
+  
 compiler: g++
 
 env:
