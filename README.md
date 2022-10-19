@@ -2,7 +2,7 @@
 Status of last deploy:<br>
 <img src="https://github.com/Zela2520/Deep_CPP/workflows/matrix/badge.svg?branch=matrix-hw"><br>
 
-Copyleft by MRGaTeAM 2022
+Copyleft by Daniil Zelenko 2022
 # TechnoPark-DeepCee
 
 
