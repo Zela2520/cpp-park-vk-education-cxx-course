@@ -8,9 +8,12 @@ function print_header() {
 }
 
 print_header "RUN cppcheck"
-cppcheck sync_lib/**/*.c async_lib/**/*.c sync_lib/main.c async_lib/main.c --enable=all --inconclusive --error-exitcode=1 -I sync_lib/matrix -I async_lib/matrix -I async_lib/processes --suppress=missingIncludeSystem
+cppcheck matrix_lib/matrix/*.cpp matrix_lib/main.c --enable=all --inconclusive --error-exitcode=1 -I matrix_lib/matrix --suppress=missingIncludeSystem
 
 print_header "RUN clang-tidy"
-clang-tidy sync_lib/**/*.c async_lib/**/*.c sync_lib/main.c async_lib/main.c -- -std=gnu99 -Isync_lib/matrix -Iasync_lib/processes -Iasync_lib/matrix
+clang-tidy matrix_lib/matrix/*.cpp matrix_lib/main.cpp -- -std=c++20 -Imatrix_lib/matrix
+
+# print_header "RUN cpplint"
+# check_log "cpplint --extensions=cpp matrix_lib/matrix/*" "Can't open for reading"
 
 print_header "SUCCESS"

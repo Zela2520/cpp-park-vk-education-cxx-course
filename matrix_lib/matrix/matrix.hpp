@@ -1,48 +1,26 @@
-#ifndef INT_MATRIX_HPP_
-#define INTERFACE_MATRIX_HPP_
+#ifndef MATRIX_LIB_MATRIX_MATRIX_HPP_
+#define MATRIX_LIB_MATRIX_MATRIX_HPP_
 
-#include <cstdint>
-#include <unistd.h>
+#include <iostream>
+#include <vector>
+#include <cstddef>
 
-class MatrixInterface {
+
+class Matrix {
     public:
-        virtual ~MatrixInterface() = default;
-        virtual void createMatrix() = 0;
-        virtual MatrixInterface& operator=(const MatrixInterface& rhs) = 0;
+        explicit Matrix(size_t row, size_t col);
+        Matrix(const Matrix& rhs) = default;
+        Matrix& operator=(const Matrix& rhs) = default;
+        ~Matrix() = default;
 
-        virtual size_t getRows() const;
-        virtual size_t getCols() const;
+        size_t getNumberOfMatrixElements() const {return m_row * m_col;}
 
-        virtual double operator()(size_t row, size_t col) const;
-        virtual double& operator()(size_t row, size_t col);
-
-        virtual bool operator==(const MatrixInterface& rhs) const;
-        virtual bool operator!=(const MatrixInterface& rhs) const;
-
-        MatrixInterface operator+(const MatrixInterface& rhs) const;
-        MatrixInterface operator-(const MatrixInterface& rhs) const;
-        MatrixInterface operator*(const MatrixInterface& rhs) const;
-
-        MatrixInterface operator*(double val) const;
-
-        virtual MatrixInterface transp() const;
-        virtual double det() const;
-        virtual MatrixInterface adj() const;
-        virtual MatrixInterface inv() const;
+    private:
+        size_t m_row;
+        size_t m_col;
+        std::vector<double> m_matrix;
 };
 
 
-class Matrix : public MatrixInterface {
-    
-};
 
-class MatrixCol : public MatrixInterface {
-
-};
-
-
-class MatrixRow : public MatrixInterface {
-
-};
-
-#endif  // INTERFACE_MATRIX_HPP_
+#endif // MATRIX_LIB_MATRIX_MATRIX_HPP_

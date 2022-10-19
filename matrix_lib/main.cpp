@@ -1,5 +1,7 @@
 #include <iostream>
 
-int main(int argc, char* argv[]){
+int main(){
+
+    std::cout << "Hello matrix" << std::endl;
     return 0;
-}
+} 

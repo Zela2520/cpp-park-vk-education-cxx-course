@@ -36,6 +36,6 @@ script:
     - make || travis_terminate 1
     - valgrind --tool=memcheck --show-leak-kinds=definite --leak-resolution=med  --track-origins=yes ./main_test.out || travis_terminate 1
 after_script:
-    - lcov —capture —directory ./CMakeFiles/task_library.dir/martix/src —output-file coverage.info
+    - lcov —capture —directory ./CMakeFiles/task_library.dir/martix_lib/matrix —output-file coverage.info
     - bash <(curl -s https://codecov.io/bash)
     - make clean

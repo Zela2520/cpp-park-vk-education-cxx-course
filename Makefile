@@ -1,28 +1,29 @@
-# TARGET = build/tests/matrix_tests
+TARGET = build/tests/test_matrix
+TARGET_2 = build/matrix_lib/matrix_calculator
 
-# .PHONY: all build rebuild check test memtest covtest clean
+.PHONY: all build rebuild check test memtest covtest clean
 
-# all: clean check build test memtest covtest
+all: clean check build test memtest covtest
 
-# build:
-# 	./build.sh
+build:
+	./build.sh
 
-# rebuild: clean build
+rebuild: clean build
 
-# check:
-# 	./linters/run.sh
+check:
+	./linters/run.sh
 
-# test:
-# 	./build.sh
-# 	./${TARGET}
+test: build
+	./${TARGET}
 
-# memtest:
-# 	./build.sh
-# 	./tests/memtest.sh ./${TARGET}
+run: build
+	./${TARGET_2}
 
-# covtest:
-# 	./build.sh
-# 	./coverage.sh ${TARGET}
+memtest: build
+	./tests/memtest.sh
 
-# clean:
-# 	rm -rf build valgrind.log coverage.info
+covtest: test
+	./coverage.sh
+
+clean:
+	rm -rf build valgrind.log coverage.info
