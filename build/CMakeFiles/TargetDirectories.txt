@@ -1,9 +1,0 @@
-/hw/build/CMakeFiles/rebuild_cache.dir
-/hw/build/CMakeFiles/edit_cache.dir
-/hw/build/matrix_lib/CMakeFiles/rebuild_cache.dir
-/hw/build/matrix_lib/CMakeFiles/edit_cache.dir
-/hw/build/matrix_lib/CMakeFiles/matrix_calculator.dir
-/hw/build/matrix_lib/CMakeFiles/matrix_lib.dir
-/hw/build/tests/CMakeFiles/rebuild_cache.dir
-/hw/build/tests/CMakeFiles/edit_cache.dir
-/hw/build/tests/CMakeFiles/test_matrix.dir

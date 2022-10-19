@@ -1,4 +1,8 @@
-[![Build Status](https://travis-ci.org/DaniilZelenko/Deep_CPP.svg?branch=matrix-hw)](https://travis-ci.org/DaniilZelenko/Deep_CPP) [![codecov](https://codecov.io/gh/DaniilZelenko/Deep_CPP/branch/matrix-hw/graph/badge.svg)](https://codecov.io/gh/DaniilZelenko/Deep_CPP)
+<!-- [![Build Status](https://travis-ci.org/DaniilZelenko/Deep_CPP.svg?branch=matrix-hw)](https://travis-ci.org/DaniilZelenko/Deep_CPP) [![codecov](https://codecov.io/gh/DaniilZelenko/Deep_CPP/branch/matrix-hw/graph/badge.svg)](https://codecov.io/gh/DaniilZelenko/Deep_CPP) -->
+Status of last deploy:<br>
+<img src="https://github.com/Zela2520/Deep_CPP/workflows/CI/badge.svg?branch=matrix-hw"><br>
+
+Copyleft by MRGaTeAM 2022
 # TechnoPark-DeepCee
 
 

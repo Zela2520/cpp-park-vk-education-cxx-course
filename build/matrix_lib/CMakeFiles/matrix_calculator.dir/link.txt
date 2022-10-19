@@ -1,1 +1,0 @@
-/usr/local/bin/c++ -g -O0 -Wall -Wextra -Wpedantic -Werror -Wpedantic -fprofile-arcs -ftest-coverage -fPIC CMakeFiles/matrix_calculator.dir/main.cpp.o -o matrix_calculator  libmatrix_lib.a 
