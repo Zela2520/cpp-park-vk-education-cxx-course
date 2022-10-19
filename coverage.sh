@@ -5,5 +5,6 @@ set -e
 project_dir=$(pwd)
 
 cd build/
-lcov -d lib  -t "tests/matrix_tests" -o coverage.info -c --include "$project_dir/matrix/*"
+lcov -t "tests/matrix_lib/matrix" -o coverage.info -c -d matrix_lib
 genhtml -o report coverage.info
+ 
