@@ -1,7 +1,8 @@
 #include "gtest/gtest.h"
 
 extern "C++" {
-    #include "../matrix_lib/matrix/matrix.hpp"
+    // #include "../matrix_lib/matrix/matrix.hpp"
+    #include "matrix.hpp"
 }
 
 
