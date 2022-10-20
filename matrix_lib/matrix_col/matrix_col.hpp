@@ -21,6 +21,4 @@
 //         std::vector<double> m_matrix;
 // };
 
-
-
 // #endif // MATRIX_LIB_MATRIX_COL_MATRIX_HPP_
