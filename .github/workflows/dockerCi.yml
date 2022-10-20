@@ -45,6 +45,15 @@ jobs:
         with:
           name: Valgrind logs
           path: valgrind.log
+  memtest-archive:
+    runs-on: ubuntu-latest
+    container: zela28/tpark:1.0
+    needs: [memtest]
+    steps:
+      - name: Download valgrind log from memtest
+      - uses: actions/download-checkout@v2
+        with:
+          name: Valgrind logs
   covtest:
     runs-on: ubuntu-latest
     container: zela28/tpark:1.0
@@ -57,3 +66,12 @@ jobs:
         with:
           name: Test coverage
           path: build/report/
+  covtest-archive:
+    runs-on: ubuntu-latest
+    container: zela28/tpark:1.0
+    needs: [covtest]
+    steps:
+      - name: Download coverage report from covtest
+      - uses: actions/download-checkout@v2
+        with:
+          name: Test coverage
