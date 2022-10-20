@@ -40,7 +40,7 @@ jobs:
       - name: Test coverage archive
         uses: actions/upload-artifact@v2
         with:
-          name: Test coverage
+          name: Generate coverage
           path: coverage-report/
 
       - name: Memory check
@@ -54,5 +54,5 @@ jobs:
       - name: Test memory archive
         uses: actions/upload-artifact@v2
         with:
-          name: Test valgrind
+          name: Memory check
           path: valgrid-output/
