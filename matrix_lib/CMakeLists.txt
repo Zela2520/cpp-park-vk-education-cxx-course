@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(matrix_calculator)
 
-file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.cpp)
-file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/matrix)
+file(GLOB SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/matrix/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/matrix_col/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/matrix_row/*.cpp)
+file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/matrix ${CMAKE_CURRENT_SOURCE_DIR}/matrix_col ${CMAKE_CURRENT_SOURCE_DIR}/matrix_row)
 
 add_library(matrix_lib STATIC ${SOURCES})
 target_include_directories(matrix_lib PUBLIC ${INCLUDE_DIRS})

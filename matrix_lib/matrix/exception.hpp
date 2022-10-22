@@ -3,6 +3,8 @@
 
 #include <exception>
 #include "matrix.hpp"
+#include "matrix_col.hpp"
+#include "matrix_row.hpp"
 
 class MatrixException : public std::exception {
     public:
