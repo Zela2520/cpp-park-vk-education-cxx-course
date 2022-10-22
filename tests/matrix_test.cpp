@@ -2,6 +2,7 @@
 
 #include "exception.hpp"
 #include "utils.hpp"
+#include <iostream>
 
 
 TEST(MatrixLib, ConstructorTest) {
@@ -95,6 +96,93 @@ TEST(MatrixLib, getColTest) {
     EXPECT_EQ(4, vectorCol4[0]);
     EXPECT_EQ(8, vectorCol4[1]);
     EXPECT_EQ(12, vectorCol4[2]);
+}
+
+TEST(MatrixLib, MatrixComparisonTest) {
+    Matrix<double, 3, 4> matrix1({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+    Matrix<double, 3, 4> matrix2({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+
+    bool comparisonResult = false;
+    if (matrix1 == matrix2) {
+        comparisonResult = true;
+    }
+
+    EXPECT_TRUE(comparisonResult == true);
+
+    comparisonResult = false;
+
+    matrix1(0, 0) = 2;
+    MatrixCol<double> vectorCol1 = matrix1.getCol(0);
+    EXPECT_EQ(2, vectorCol1[0]);
+    EXPECT_EQ(5, vectorCol1[1]);
+    EXPECT_EQ(9, vectorCol1[2]);
+
+    if (matrix1 != matrix2) {
+        comparisonResult = true;
+    }
+
+    EXPECT_TRUE(comparisonResult == true);
+}
+
+TEST(MatrixLib, MatrixSumTest) {
+    Matrix<double, 3, 4> matrix1;
+    Matrix<double, 3, 4> matrix2;
+
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            matrix2(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> sumMatrix(matrix1.getRows(), matrix1.getCols());
+    sumMatrix = matrix1 + matrix2;
+
+    MatrixCol<double> vectorCol1 = sumMatrix.getCol(0);
+
+    EXPECT_EQ(2, vectorCol1[0]);
+    EXPECT_EQ(10, vectorCol1[1]);
+    EXPECT_EQ(18, vectorCol1[2]);
+
+    MatrixCol<double> vectorCol2 = sumMatrix.getCol(1);
+    EXPECT_EQ(4, vectorCol2[0]);
+    EXPECT_EQ(12, vectorCol2[1]);
+    EXPECT_EQ(20, vectorCol2[2]);
+
+    MatrixCol<double> vectorCol3 = sumMatrix.getCol(2);
+    EXPECT_EQ(6, vectorCol3[0]);
+    EXPECT_EQ(14, vectorCol3[1]);
+    EXPECT_EQ(22, vectorCol3[2]);
+
+    MatrixCol<double> vectorCol4 = sumMatrix.getCol(3);
+    EXPECT_EQ(8, vectorCol4[0]);
+    EXPECT_EQ(16, vectorCol4[1]);
+    EXPECT_EQ(24, vectorCol4[2]);
+}
+
+TEST(MatrixLib, MatrixSubtractionTest) {
+    Matrix<double, 3, 4> matrix1;
+    Matrix<double, 3, 4> matrix2;
+
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            matrix2(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> subtractionMatrix(matrix1.getRows(), matrix1.getCols());
+    subtractionMatrix = matrix1 - matrix2;
+
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            EXPECT_EQ(0, subtractionMatrix(curRow, curCol));
+        }
+    }
 }
 
 TEST(MatrixRow, ConstructorTest) {
