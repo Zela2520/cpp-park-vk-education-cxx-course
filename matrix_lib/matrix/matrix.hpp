@@ -34,28 +34,27 @@ template <typename T = double, size_t size = 1>
 class VectorCol;
 ///////////////////////////////////////Matrix row////////////////////////////////////////////////
 template <typename T = double, size_t size = 1>
-class VectorRow {
+class MatrixRow {
     public:
-        VectorRow(std::initializer_list<T> &list);
-        VectorRow (size_t _size = 1, T _dafault_value = 0);
-        explicit VectorRow(std::istream& input_stream);
+        MatrixRow(size_t _size = 1, T _dafaultValue = 0);
+        MatrixRow(std::initializer_list<T> &list);
         
-        size_t getSize() const { return m_data.size(); };
+        size_t getSize() const {return m_matrix.size();};
         
-        T& operator[](size_t pos);
-        T& operator[](size_t pos) const;
+        T operator[](size_t index) const;
+        T& operator[](size_t index);
         
         // T& operator(size_pos);
         // T& operator(size_pos) const;
         
-        bool operator==(const VectorRow& rhs) const;
-        bool operator!=(const VectorRow& rhs) const;
+        bool operator==(const MatrixRow& rhs) const;
+        bool operator!=(const MatrixRow& rhs) const;
         
-        VectorRow operator+(const VectorRow& rhs) const;
-        VectorRow operator-(const VectorRow& rhs) const;
+        MatrixRow operator+(const MatrixRow& rhs) const;
+        MatrixRow operator-(const MatrixRow& rhs) const;
         
         
-        VectorRow operator*(int value) const;
+        MatrixRow operator*(int value) const;
         // Matrix operator*(const VectorCol& rhs) const;
         // Matrix operator(const Matrix& rhs) const;
         /*
@@ -65,16 +64,40 @@ class VectorRow {
         
     
     private:
-        std::vector<T> m_data;
+        std::vector<T> m_matrix;
+        size_t m_size;
 };
 
 template <typename T, size_t size>
-VectorRow<T, size>::VectorRow(std::initializer_list<T> &list) : VectorRow(list.size()) {
+MatrixRow<T, size>::MatrixRow(size_t _size, T _dafaultValue) : m_size(_size) {
+    this->m_matrix.resize(this->m_size, _dafaultValue);
+}
+
+template <typename T, size_t size>
+MatrixRow<T, size>::MatrixRow(std::initializer_list<T> &list) : MatrixRow(list.size()) {
     auto i = 0;
     for (const auto &elem : list) {
-        m_data[i] = elem;
+        m_matrix[i] = elem;
         i += 1;
     }
+}
+
+template <typename T, size_t size>
+T MatrixRow<T, size>::operator[](size_t index) const {
+    if (index < 0 || index > m_size) {
+        throw "error";
+    }
+
+    return m_matrix[index];
+}
+
+template <typename T, size_t size>
+T& MatrixRow<T, size>::operator[](size_t index) {
+    if (index > m_size) {
+        throw "error";
+    }
+
+    return m_matrix[index];
 }
 
 
@@ -97,6 +120,8 @@ class Matrix {
         double operator()(size_t cur_row, size_t cur_col) const;
         const double& operator()(size_t cur_row, size_t cur_col);
 
+        
+
     private:
         size_t m_row;
         size_t m_col;
@@ -112,10 +137,8 @@ Matrix<T, row, col>::Matrix() {
 
 template <typename T, size_t row, size_t col>
 Matrix<T, row, col>::Matrix(const std::initializer_list<T> &list) : m_row(row), m_col(col) {
-    auto i = 0;
     for (const auto &elem : list) {
-        m_matrix[i] = elem;
-        ++i;
+        m_matrix.push_back(elem);
     }
 }
 
