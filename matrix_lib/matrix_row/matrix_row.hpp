@@ -61,7 +61,7 @@ MatrixRow<T, size>::MatrixRow(const std::initializer_list<T> &list) {
 
 template <typename T, size_t size>
 T MatrixRow<T, size>::operator[](size_t index) const {
-    if (index < 0 || index > m_size) {
+    if (index < 0 || index >= m_size) {
         throw "error";
     }
 

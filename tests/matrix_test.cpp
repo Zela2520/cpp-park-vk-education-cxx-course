@@ -41,6 +41,62 @@ TEST(MatrixLib, AccessToMatrixElementsTest) {
     EXPECT_EQ(6, matrix(1, 1));
 }
 
+TEST(MatrixLib, getDiagonalTest) {
+    Matrix<double, 4, 4> matrix({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16});
+    MatrixRow<double> vectorRow = matrix.getDiagonal();
+
+    EXPECT_EQ(1, vectorRow[0]);
+    EXPECT_EQ(6, vectorRow[1]);
+    EXPECT_EQ(11, vectorRow[2]);
+    EXPECT_EQ(16, vectorRow[3]);
+}
+
+TEST(MatrixLib, getRowTest) {
+    Matrix<double, 3, 4> matrix({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+
+    MatrixRow<double> vectorRow1 = matrix.getRow(0);
+    EXPECT_EQ(1, vectorRow1[0]);
+    EXPECT_EQ(2, vectorRow1[1]);
+    EXPECT_EQ(3, vectorRow1[2]);
+    EXPECT_EQ(4, vectorRow1[3]);
+
+    MatrixRow<double> vectorRow2 = matrix.getRow(1);
+    EXPECT_EQ(5, vectorRow2[0]);
+    EXPECT_EQ(6, vectorRow2[1]);
+    EXPECT_EQ(7, vectorRow2[2]);
+    EXPECT_EQ(8, vectorRow2[3]);
+
+    MatrixRow<double> vectorRow3 = matrix.getRow(2);
+    EXPECT_EQ(9, vectorRow3[0]);
+    EXPECT_EQ(10, vectorRow3[1]);
+    EXPECT_EQ(11, vectorRow3[2]);
+    EXPECT_EQ(12, vectorRow3[3]);
+}
+
+TEST(MatrixLib, getColTest) {
+    Matrix<double, 3, 4> matrix({1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12});
+
+    MatrixCol<double> vectorCol1 = matrix.getCol(0);
+    EXPECT_EQ(1, vectorCol1[0]);
+    EXPECT_EQ(5, vectorCol1[1]);
+    EXPECT_EQ(9, vectorCol1[2]);
+
+    MatrixCol<double> vectorCol2 = matrix.getCol(1);
+    EXPECT_EQ(2, vectorCol2[0]);
+    EXPECT_EQ(6, vectorCol2[1]);
+    EXPECT_EQ(10, vectorCol2[2]);
+
+    MatrixCol<double> vectorCol3 = matrix.getCol(2);
+    EXPECT_EQ(3, vectorCol3[0]);
+    EXPECT_EQ(7, vectorCol3[1]);
+    EXPECT_EQ(11, vectorCol3[2]);
+
+    MatrixCol<double> vectorCol4 = matrix.getCol(3);
+    EXPECT_EQ(4, vectorCol4[0]);
+    EXPECT_EQ(8, vectorCol4[1]);
+    EXPECT_EQ(12, vectorCol4[2]);
+}
+
 TEST(MatrixRow, ConstructorTest) {
     MatrixRow<double> matrix(3, 4);
     EXPECT_EQ(3, matrix.getSize());
