@@ -1,5 +1,5 @@
-// #ifndef MATRIX_LIB_MATRIX_COL_MATRIX_HPP_
-// #define MATRIX_LIB_MATRIX_COL_MATRIX_HPP_
+#ifndef MATRIX_LIB_MATRIX_COL_MATRIX_HPP_
+#define MATRIX_LIB_MATRIX_COL_MATRIX_HPP_
 
 // #include <iostream>
 // #include <vector>
@@ -8,7 +8,7 @@
 
 // class MatrixCol {
 //     public:
-//         explicit MatrixСol(size_t row, size_t col);
+//         explicit MatrixСol(size_t col);
 //         MatrixCol(const MatrixCol& rhs) = default;
 //         MatrixCol& operator=(const MatrixCol& rhs) = default;
 //         ~MatrixCol() = default;
@@ -21,4 +21,9 @@
 //         std::vector<double> m_matrix;
 // };
 
-// #endif // MATRIX_LIB_MATRIX_COL_MATRIX_HPP_
+
+// MatrixCol::MatrixCol() {
+//     m_matrix = ;
+// }
+
+#endif // MATRIX_LIB_MATRIX_COL_MATRIX_HPP_

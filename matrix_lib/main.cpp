@@ -2,7 +2,8 @@
 #include <exception.hpp>
 #include <fstream>
 
-int main(){
-    std::cout << "Hello world";
+
+int main() {
+    std::cout << "Hello world\n";
     return 0;
 } 

@@ -1,11 +1,7 @@
-#ifndef MATRIX_LIB_MATRIX_EXCEPTION_HPP_
-#define MATRIX_LIB_MATRIX_EXCEPTION_HPP_
-
-#pragma once // NOLINT
+#ifndef MATRIX_LIB_MATRIX_MATRIX_EXCEPTION_HPP_
+#define MATRIX_LIB_MATRIX_MATRIX_EXCEPTION_HPP_
 
 #include <exception>
-#include <string>
-
 #include "matrix.hpp"
 
 class MatrixException : public std::exception {
@@ -26,14 +22,14 @@ class InvalidMatrixStream: public MatrixException {
       : MatrixException("Error occurred while reading from stream") {}
 };
 
-// class OutOfRange: public MatrixException {
-//  public:
-//   OutOfRange(size_t i, size_t j, const Matrix<double>& matrix)
-//       : MatrixException(
-//       "Indexes (" + std::to_string(i) + ", " + std::to_string(j) + ") are out of range. Matrix size is [" +
-//       std::to_string(matrix.getRows()) + ", " + std::to_string(matrix.getCols()) + "]"
-//   ) {}
-// };
+class OutOfRange: public MatrixException {
+ public:
+  OutOfRange(size_t i, size_t j, const Matrix<double>& matrix)
+      : MatrixException(
+      "Indexes (" + std::to_string(i) + ", " + std::to_string(j) + ") are out of range. Matrix size is [" +
+      std::to_string(matrix.getRows()) + ", " + std::to_string(matrix.getCols()) + "]"
+  ) {}
+};
 
 // class DimensionMismatch: public MatrixException {
 //  public:
