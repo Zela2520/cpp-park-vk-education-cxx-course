@@ -52,14 +52,6 @@ class MatrixRow {
         
         T operator[](size_t index) const;
         T& operator[](size_t index);
-        
-        
-        // bool operator==(const MatrixRow& rhs) const {
-        //     return (m_matrix == rhs.m_matrix);
-        // };
-        // bool operator!=(const MatrixRow& rhs) const {
-        //     return (m_matrix == rhs.m_matrix);
-        // }
 
         // Строка (+-*) строка(*столбец)
         MatrixRow<T> operator+(const MatrixRow<T>& rhs) const;
@@ -71,10 +63,8 @@ class MatrixRow {
         MatrixRow<T> operator-(T value) const;
         MatrixRow<T> operator+(T value) const;
 
-        // Строка (+-*) матрица
+        // Строка (*) матрица (разных размеров)
         MatrixRow<T> operator*(const Matrix<T>& rhs) const;
-        // MatrixRow<T> operator-(const Matrix<T>& rhs) const;
-        // MatrixRow<T> operator+(const Matrix<T>& rhs) const;
         
     private:
         std::vector<T> m_matrix;
@@ -219,30 +209,23 @@ MatrixRow<T> MatrixRow<T, size>::operator+(T value) const {
 
 template <typename T, size_t size>
 MatrixRow<T> MatrixRow<T, size>::operator*(const Matrix<T>& rhs) const {
-    // if (this->getSize() != rhs.getRows()) {
-    //     throw "error";
-    // }
+    if (this->getSize() != rhs.getRows()) {
+        // std::cout << rhs.getRows() << std::endl;
+        throw "error";
+    }
 
     MatrixRow<T> matrixMultiplication(rhs.getCols(), 0);
 
-    for (size_t curRow = 0; curRow < this->getSize(); ++curRow) {
-        for (size_t curCol = 0; curCol < rhs.getCols(); ++curCol) {
-            matrixMultiplication[curRow] += (*this)[curRow] * rhs(curRow, curCol);
-            std::cout << (*this)[curRow] * rhs(curRow, curCol) << std::endl;
+    for (size_t j = 0; j < rhs.getCols(); ++j) {
+        T tempRes = 0;
+        for (size_t curRow = 0; curRow < rhs.getRows(); ++curRow) {
+            tempRes += (*this)[curRow] * rhs(curRow, j);
         }
+        matrixMultiplication[j] = tempRes;
     }
+
     return matrixMultiplication;
 }
-
-// template <typename T, size_t size>
-// MatrixRow<T, size> MatrixRow<T, size>::operator-(const Matrix<T>& rhs) const {
-
-// }
-
-// template <typename T, size_t size>
-// MatrixRow<T> MatrixRow<T, size>::operator+(const Matrix<T>& rhs) const {
-
-// }
 
 /////////////////////////////////////Matrix col////////////////////////////////////////////////
 
@@ -267,9 +250,19 @@ class MatrixCol {
         
         MatrixCol operator+(const MatrixCol& rhs) const;
         MatrixCol operator-(const MatrixCol& rhs) const;
-        
-        
-        MatrixCol operator*(int value) const;
+
+        // Строка (+-*) строка(*столбец)
+        // MatrixCol<T> operator+(const MatrixCol<T>& rhs) const;
+        // MatrixCol<T> operator-(const MatrixCol<T>& rhs) const;
+        // T operator*(const MatrixCol<T>& rhs) const;
+
+        // // Строка (+-*) число
+        // MatrixCol<T> operator*(T value) const;
+        // MatrixCol<T> operator-(T value) const;
+        // MatrixCol<T> operator+(T value) const;
+
+        // // Строка (*) матрица (разных размеров)
+        // MatrixCol<T> operator*(const Matrix<T>& rhs) const;
     
     private:
         std::vector<T> m_matrix;
@@ -326,8 +319,43 @@ T& MatrixCol<T, size>::operator[](size_t index) {
     return m_matrix[index];
 }
 
+// template <typename T, size_t size>
+// MatrixCol<T> MatrixCol<T, size>::operator+(const MatrixCol<T>& rhs) const {
+
+// }
+
+// template <typename T, size_t size>
+// MatrixCol<T> MatrixCol<T, size>::operator-(const MatrixCol<T>& rhs) const {
+
+// }
+
+// template <typename T, size_t size>
+// T MatrixCol<T, size>::operator*(const MatrixCol<T>& rhs) const {
+
+// }
 
 
+// // Строка (+-*) число
+// template <typename T, size_t size>
+// MatrixCol<T> MatrixCol<T, size>::operator*(T value) const {
+
+// }
+
+// template <typename T, size_t size>
+// MatrixCol<T> MatrixCol<T, size>::operator-(T value) const {
+
+// }
+
+// template <typename T, size_t size>
+// MatrixCol<T> MatrixCol<T, size>::operator+(T value) const {
+
+// }
+
+// // Строка (*) матрица (разных размеров)
+// template <typename T, size_t size>
+// MatrixCol<T> MatrixCol<T, size>::operator*(const Matrix<T>& rhs) const {
+
+// }
 
 
 

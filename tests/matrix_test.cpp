@@ -556,7 +556,7 @@ TEST(MatrixRow, rowOnMatrixMultiplicationTest) {
         }
     }
 
-    MatrixRow<double> matrixRow1(3, 0);
+    MatrixRow<double> matrixRow1(4, 0);
     double initValue2 = 1;
     for (size_t index = 0; index < matrixRow1.getSize(); ++index) {
         matrixRow1[index] = initValue2;
