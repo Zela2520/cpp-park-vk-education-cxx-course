@@ -445,6 +445,16 @@ class Matrix {
         Matrix<T> operator-(const Matrix<T, row, col>& rhs) const;
         Matrix<T> operator*(const Matrix<T, row, col>& rhs) const;
 
+        // вот эта протестить и усе
+        Matrix<T> operator+(const MatrixRow<T>& rhs) const;
+        Matrix<T> operator-(const MatrixRow<T>& rhs) const;
+
+        Matrix<T> operator+(const MatrixCol<T>& rhs) const;
+        Matrix<T> operator-(const MatrixCol<T>& rhs) const;
+
+        MatrixCol<T> operator*(const MatrixCol<T>& rhs) const;
+        // вот эта протестить и усе
+
         Matrix<T> operator+(T val) const;
         Matrix<T> operator-(T val) const;
         // правостороннее
@@ -842,6 +852,96 @@ Matrix<T> Matrix<T, row, col>::inv() const {
         }
     }
     return newmatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator+(const MatrixRow<T>& rhs) const {
+    if (this->getCols() != rhs.getSize()) {
+        throw "error";
+    }
+
+    Matrix<T> resMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            resMatrix(curRow, curCol) = (*this)(curRow, curCol) + rhs[curCol];
+        }
+    }
+
+    return resMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator-(const MatrixRow<T>& rhs) const {
+    if (this->getCols() != rhs.getSize()) {
+        throw "error";
+    }
+
+    Matrix<T> resMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            resMatrix(curRow, curCol) = (*this)(curRow, curCol) - rhs[curCol];
+        }
+    }
+
+    return resMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator+(const MatrixCol<T>& rhs) const {
+    if (this->getCols() != rhs.getSize()) {
+        throw "error";
+    }
+
+    Matrix<T> resMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            resMatrix(curRow, curCol) = (*this)(curRow, curCol) + rhs[curCol];
+        }
+    }
+
+    return resMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator-(const MatrixCol<T>& rhs) const {
+    if (this->getCols() != rhs.getSize()) {
+        throw "error";
+    }
+
+    Matrix<T> resMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            resMatrix(curRow, curCol) = (*this)(curRow, curCol) - rhs[curCol];
+        }
+    }
+
+    return resMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+MatrixCol<T> Matrix<T, row, col>::operator*(const MatrixCol<T>& rhs) const {
+    if (this->getCols() != rhs.getSize()) {
+        throw "error";
+    }
+
+    MatrixCol<T> resMatrix(this->getRows(), 0);
+
+    for (size_t curRow = 0; curRow < this->getRows(); ++curRow) {
+        T tempRes = 0;
+        for (size_t curCol = 0; curCol < this->getCols(); ++curCol) {
+            tempRes += (*this)(curRow, curCol) * rhs[curCol];
+            std::cout << rhs[curCol] << "matrix elem" << std::endl;
+            std::cout << (*this)(curRow, curCol) << "matrixCol elem" << std::endl;
+        }
+        std::cout << tempRes << std::endl;
+        resMatrix[curRow] = tempRes;
+    }
+
+    return resMatrix;
 }
 
 #endif // MATRIX_LIB_MATRIX_MATRIX_HPP_
