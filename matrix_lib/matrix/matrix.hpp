@@ -280,25 +280,8 @@ class Matrix {
             return multiplicationMatrix;
         }
 
-        friend void fillMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix);
-        //     size_t miss_rows = 0;
-
-        //     for (size_t i = 0; i < matrix.getRows(); ++i) {
-        //         if (i != del_row) {
-        //             size_t miss_cols = 0;
-
-        //             for (size_t j = 0; j < matrix.getCols(); ++j) {
-        //                 if (del_col != j) {
-        //                     new_matrix(i - miss_rows,j - miss_cols) = matrix.matrix(i, j);
-        //                 } else {
-        //                     ++miss_cols;
-        //                 }
-        //             }
-        //         } else {
-        //             ++miss_rows;
-        //         }
-        //     }
-        // }
+        template <typename T1, size_t N, size_t M>
+        friend void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix);
 
         friend Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>* new_matrix);
 
@@ -532,8 +515,8 @@ Matrix<T> Matrix<T, row, col>::transp() const {
     return transpMatrix;
 }
 
-
-void fillMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
+template <typename T1, size_t N, size_t M>
+void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
     size_t miss_rows = 0;
 
     for (size_t i = 0; i < matrix.getRows(); ++i) {
@@ -553,7 +536,31 @@ void fillMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Mat
     }
 }
 
+template <typename T, size_t row, size_t col>
+T Matrix<T, row, col>::det() const {
+    if (this->getRows() != this->getCols()) {
+        throw "the real slim shady please stand up";
+    }
 
+    if (this->getRows() == 1) {
+        return (*this)(0,0);
+    } else if (this->getRows() == 2) {
+        return (((*this)(0,0) * (*this)(1,1))
+        - ((*this)(0,1) * (*this)(1,0)));
+    }
+
+    Matrix<T> minor_matrix(this->getRows() - 1, this->getCols() - 1);
+    double sum_res = 0;
+    int sig_n = 1;
+
+    for (size_t curCol = 0; curCol < this->getCols(); ++curCol) {
+        fillMinor(*this, 0, curCol, minor_matrix);
+        double temp_res = minor_matrix.det() * (*this)(0, curCol);
+        sum_res += sig_n * temp_res;
+        sig_n *= -1;
+    }
+    return sum_res;
+}
 
 Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
     size_t miss_rows = 0;
@@ -575,10 +582,6 @@ Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, 
     }
     return new_matrix;
 }
-// template <typename T, size_t row, size_t col>
-// T Matrix<T, row, col>::det() const {
-    
-// }
 
 // template <typename T, size_t row, size_t col>
 // Matrix<T> Matrix<T, row, col>::adj() const {
