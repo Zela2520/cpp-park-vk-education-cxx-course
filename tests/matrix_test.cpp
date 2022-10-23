@@ -277,22 +277,23 @@ TEST(MatrixLib, TranspMatrixTest) {
 }
 
 TEST(MatrixLib, DetMatrixTest) {
-    Matrix<double, 4, 4> matrix1;
-    double initValue = 1;
-    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
-        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
-            matrix1(curRow, curCol) = initValue;
-            ++initValue;
-        }
-    }
-
-    matrix1(1, 1) = 16;
-    matrix1(1, 2) = 217;
-    matrix1(2, 3) = 1121;
-
+    Matrix<double, 2, 2> matrix1({1, 2,
+                                5, 16});
     double det = matrix1.det();
-    std::cout << det << std::endl;
-    EXPECT_EQ(-399600, det);
+    EXPECT_EQ(6, det);
+
+    Matrix<double, 3, 3> matrix2({1, 2, 3,
+                                5, 16, 1,
+                                -1, 2, 2});
+    double det2 = matrix2.det();
+    EXPECT_EQ(86, det2);
+
+    Matrix<double, 4, 4> matrix3({1, 2, 3, 5,
+                                16, 1, -1, 2,
+                                2, 8, 9, 10,
+                                1, -1, 6, 2});
+    double det3 = matrix3.det();
+    EXPECT_EQ(-1947, det3);
 }
 
 TEST(MatrixRow, ConstructorTest) {

@@ -516,7 +516,7 @@ Matrix<T> Matrix<T, row, col>::transp() const {
 }
 
 template <typename T1, size_t N, size_t M>
-void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
+void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, Matrix<double>* new_matrix) {
     size_t miss_rows = 0;
 
     for (size_t i = 0; i < matrix.getRows(); ++i) {
@@ -525,7 +525,7 @@ void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, M
 
             for (size_t j = 0; j < matrix.getCols(); ++j) {
                 if (del_col != j) {
-                    new_matrix(i - miss_rows,j - miss_cols) = matrix(i, j);
+                    (*new_matrix)(i - miss_rows, j - miss_cols) = matrix(i, j);
                 } else {
                     ++miss_cols;
                 }
@@ -554,7 +554,7 @@ T Matrix<T, row, col>::det() const {
     int sig_n = 1;
 
     for (size_t curCol = 0; curCol < this->getCols(); ++curCol) {
-        fillMinor(*this, 0, curCol, minor_matrix);
+        fillMinor((*this), 0, curCol, &minor_matrix);
         double temp_res = minor_matrix.det() * (*this)(0, curCol);
         sum_res += sig_n * temp_res;
         sig_n *= -1;
