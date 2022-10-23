@@ -280,13 +280,27 @@ class Matrix {
             return multiplicationMatrix;
         }
 
-        friend void fill_minor(const Matrix& matrix, size_t del_row, size_t del_col, Matrix* new_matrix) {
+        friend void fillMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix);
+        //     size_t miss_rows = 0;
 
-        }
+        //     for (size_t i = 0; i < matrix.getRows(); ++i) {
+        //         if (i != del_row) {
+        //             size_t miss_cols = 0;
 
-        friend Matrix return_filled_minor(const Matrix& matrix, size_t del_row, size_t del_col, Matrix* new_matrix) {
+        //             for (size_t j = 0; j < matrix.getCols(); ++j) {
+        //                 if (del_col != j) {
+        //                     new_matrix(i - miss_rows,j - miss_cols) = matrix.matrix(i, j);
+        //                 } else {
+        //                     ++miss_cols;
+        //                 }
+        //             }
+        //         } else {
+        //             ++miss_rows;
+        //         }
+        //     }
+        // }
 
-        }
+        friend Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>* new_matrix);
 
         Matrix<T> transp() const;
         T det() const;
@@ -518,6 +532,49 @@ Matrix<T> Matrix<T, row, col>::transp() const {
     return transpMatrix;
 }
 
+
+void fillMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
+    size_t miss_rows = 0;
+
+    for (size_t i = 0; i < matrix.getRows(); ++i) {
+        if (i != del_row) {
+            size_t miss_cols = 0;
+
+            for (size_t j = 0; j < matrix.getCols(); ++j) {
+                if (del_col != j) {
+                    new_matrix(i - miss_rows,j - miss_cols) = matrix(i, j);
+                } else {
+                    ++miss_cols;
+                }
+            }
+        } else {
+            ++miss_rows;
+        }
+    }
+}
+
+
+
+Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
+    size_t miss_rows = 0;
+
+    for (size_t i = 0; i < matrix.getRows(); ++i) {
+        if (i != del_row) {
+            size_t miss_cols = 0;
+
+            for (size_t j = 0; j < matrix.getCols(); ++j) {
+                if (del_col != j) {
+                    new_matrix(i - miss_rows, j - miss_cols) = matrix(i, j);
+                } else {
+                    ++miss_cols;
+                }
+            }
+        }   else {
+            ++miss_rows;
+        }
+    }
+    return new_matrix;
+}
 // template <typename T, size_t row, size_t col>
 // T Matrix<T, row, col>::det() const {
     
