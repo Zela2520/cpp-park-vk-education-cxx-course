@@ -210,7 +210,6 @@ MatrixRow<T> MatrixRow<T, size>::operator+(T value) const {
 template <typename T, size_t size>
 MatrixRow<T> MatrixRow<T, size>::operator*(const Matrix<T>& rhs) const {
     if (this->getSize() != rhs.getRows()) {
-        // std::cout << rhs.getRows() << std::endl;
         throw "error";
     }
 
@@ -244,17 +243,11 @@ class MatrixCol {
         
         T operator[](size_t index) const;
         T& operator[](size_t index);
-        
-        bool operator==(const MatrixCol& rhs) const;
-        bool operator!=(const MatrixCol& rhs) const;
-        
-        MatrixCol operator+(const MatrixCol& rhs) const;
-        MatrixCol operator-(const MatrixCol& rhs) const;
 
         // Строка (+-*) строка(*столбец)
-        // MatrixCol<T> operator+(const MatrixCol<T>& rhs) const;
-        // MatrixCol<T> operator-(const MatrixCol<T>& rhs) const;
-        // T operator*(const MatrixCol<T>& rhs) const;
+        MatrixCol<T> operator+(const MatrixCol<T>& rhs) const;
+        MatrixCol<T> operator-(const MatrixCol<T>& rhs) const;
+        Matrix<T> operator*(const MatrixRow<T>& rhs) const;
 
         // // Строка (+-*) число
         // MatrixCol<T> operator*(T value) const;
@@ -319,20 +312,50 @@ T& MatrixCol<T, size>::operator[](size_t index) {
     return m_matrix[index];
 }
 
-// template <typename T, size_t size>
-// MatrixCol<T> MatrixCol<T, size>::operator+(const MatrixCol<T>& rhs) const {
+template <typename T, size_t size>
+MatrixCol<T> MatrixCol<T, size>::operator+(const MatrixCol<T>& rhs) const {
+    if (this->getSize() != rhs.getSize()) {
+        throw "error";
+    }
 
-// }
+    MatrixCol<T> sumMatrix(this->getSize(), 0);
 
-// template <typename T, size_t size>
-// MatrixCol<T> MatrixCol<T, size>::operator-(const MatrixCol<T>& rhs) const {
+    for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
+        sumMatrix[curRowIndex] = (*this)[curRowIndex] + rhs[curRowIndex];
+    }
+    return sumMatrix;
+}
 
-// }
+template <typename T, size_t size>
+MatrixCol<T> MatrixCol<T, size>::operator-(const MatrixCol<T>& rhs) const {
+    if (this->getSize() != rhs.getSize()) {
+        throw "error";
+    }
 
-// template <typename T, size_t size>
-// T MatrixCol<T, size>::operator*(const MatrixCol<T>& rhs) const {
+    MatrixCol<T> matrixSubtraction(this->getSize(), 0);
 
-// }
+    for (size_t curColMatrixColIndex = 0; curColMatrixColIndex < this->getSize(); ++curColMatrixColIndex) {
+        matrixSubtraction[curColMatrixColIndex] = (*this)[curColMatrixColIndex] - rhs[curColMatrixColIndex];
+    }
+    return matrixSubtraction;
+}
+
+template <typename T, size_t size>
+Matrix<T> MatrixCol<T, size>::operator*(const MatrixRow<T>& rhs) const {
+    if (this->getSize() != rhs.getSize()) {
+        throw "error";
+    }
+
+    Matrix<T> matrixMultiplication(this->getSize(), this->getSize());
+
+    for (size_t curRow = 0; curRow < this->getSize(); ++curRow) {
+        for (size_t curCol = 0; curCol < this->getSize(); ++curCol) {
+            matrixMultiplication(curRow, curCol) = (*this)[curRow] * rhs[curCol];
+        }
+    }
+
+    return matrixMultiplication;
+}
 
 
 // // Строка (+-*) число
