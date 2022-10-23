@@ -264,21 +264,34 @@ class Matrix {
 
         Matrix<T> operator+(const Matrix<T, row, col>& rhs) const;
         Matrix<T> operator-(const Matrix<T, row, col>& rhs) const;
-        Matrix operator*(const Matrix<T, row, col>& rhs) const;
+        Matrix<T> operator*(const Matrix<T, row, col>& rhs) const;
 
-        Matrix operator*(double val) const;
+        // правостороннее
+        Matrix<T> operator*(T val) const;
+        // левостороннее
+        friend Matrix<T> operator*(T val, const Matrix<T, row, col>& matrix) {
+            Matrix<T> multiplicationMatrix(matrix.getRows(), matrix.getCols());
 
-        // friend
-        // Matrix operator*(double val, const Matrix& matrix);
-        // friend
-        // void fill_minor(const Matrix& matrix, size_t del_row, size_t del_col, Matrix* new_matrix);
-        // friend
-        // Matrix return_filled_minor(const Matrix& matrix, size_t del_row, size_t del_col, Matrix* new_matrix);
+            for (size_t curRow = 0; curRow < matrix.getRows(); ++curRow) {
+                for (size_t curCol = 0; curCol < matrix.getCols(); ++curCol) {
+                    multiplicationMatrix(curRow, curCol) = matrix(curRow, curCol) * val;
+                }
+            }
+            return multiplicationMatrix;
+        }
 
-        Matrix transp() const;
-        double det() const;
-        Matrix adj() const;
-        Matrix inv() const;
+        friend void fill_minor(const Matrix& matrix, size_t del_row, size_t del_col, Matrix* new_matrix) {
+
+        }
+
+        friend Matrix return_filled_minor(const Matrix& matrix, size_t del_row, size_t del_col, Matrix* new_matrix) {
+
+        }
+
+        Matrix<T> transp() const;
+        T det() const;
+        Matrix<T> adj() const;
+        Matrix<T> inv() const;
 
     private:
         size_t m_row;
@@ -452,24 +465,72 @@ Matrix<T> Matrix<T, row, col>::operator-(const Matrix<T, row, col>& rhs) const {
         throw "error";
     }
 
-    Matrix<T> sumMatrix(this->m_row, this->m_col);
+    Matrix<T> subtractionMatrix(this->m_row, this->m_col);
 
     for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
         for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
-            sumMatrix(curRow, curCol) = (*this)(curRow, curCol) - rhs(curRow, curCol);
+            subtractionMatrix(curRow, curCol) = (*this)(curRow, curCol) - rhs(curRow, curCol);
         }
     }
-    return sumMatrix;
+    return subtractionMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator*(const Matrix<T, row, col>& rhs) const {
+    if (this->getCols() != rhs.getRows()) {
+        throw "error";
+    }
+
+    Matrix<T> multiplicationMatrix(this->m_row, rhs.m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < rhs.m_col; ++curCol) {
+            for (size_t k = 0; k < this->m_col; ++k) {
+                multiplicationMatrix(curRow, curCol) += (*this)(curRow, k) * rhs(k, curCol);
+            }
+        }
+    }
+
+    return multiplicationMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator*(T val) const {
+    Matrix<T> multiplicationMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            multiplicationMatrix(curRow, curCol) = (*this)(curRow, curCol) * val;
+        }
+    }
+    return multiplicationMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::transp() const {
+    Matrix<T> transpMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            transpMatrix(curCol, curRow) = (*this)(curRow, curCol);
+        }
+    }
+    return transpMatrix;
 }
 
 // template <typename T, size_t row, size_t col>
-// Matrix operator*(const Matrix& rhs) const {
-
+// T Matrix<T, row, col>::det() const {
+    
 // }
 
 // template <typename T, size_t row, size_t col>
-// Matrix operator*(double val) const {
+// Matrix<T> Matrix<T, row, col>::adj() const {
+    
+// }
 
+// template <typename T, size_t row, size_t col>
+// Matrix<T> Matrix<T, row, col>::inv() const {
+    
 // }
 
 #endif // MATRIX_LIB_MATRIX_MATRIX_HPP_

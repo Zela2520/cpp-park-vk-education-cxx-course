@@ -185,6 +185,97 @@ TEST(MatrixLib, MatrixSubtractionTest) {
     }
 }
 
+TEST(MatrixLib, MatrixMultiplicationTest) {
+    Matrix<double, 4, 4> matrix1;
+    Matrix<double, 4, 4> matrix2;
+
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            matrix2(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> multiplicationMatrix(matrix1.getRows(), matrix1.getCols());
+    multiplicationMatrix = matrix1 * matrix2;
+
+    MatrixRow<double> vectorRow = multiplicationMatrix.getDiagonal();
+
+    EXPECT_EQ(90, vectorRow[0]);
+    EXPECT_EQ(228, vectorRow[1]);
+    EXPECT_EQ(398, vectorRow[2]);
+    EXPECT_EQ(600, vectorRow[3]);
+}
+
+TEST(MatrixLib, MatrixRightMultiplicationTest) {
+    Matrix<double, 4, 4> matrix1;
+
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> rightMultiplicationMatrix(matrix1.getRows(), matrix1.getCols());
+    rightMultiplicationMatrix = matrix1 * 3;
+
+    MatrixRow<double> vectorRow = rightMultiplicationMatrix.getDiagonal();
+
+    EXPECT_EQ(3, vectorRow[0]);
+    EXPECT_EQ(18, vectorRow[1]);
+    EXPECT_EQ(33, vectorRow[2]);
+    EXPECT_EQ(48, vectorRow[3]);
+}
+
+TEST(MatrixLib, MatrixLeftMultiplicationTest) {
+    Matrix<double, 4, 4> matrix1;
+
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> leftMultiplicationMatrix(matrix1.getRows(), matrix1.getCols());
+    leftMultiplicationMatrix = 3 * matrix1;
+
+    MatrixRow<double> vectorRow = leftMultiplicationMatrix.getDiagonal();
+
+    EXPECT_EQ(3, vectorRow[0]);
+    EXPECT_EQ(18, vectorRow[1]);
+    EXPECT_EQ(33, vectorRow[2]);
+    EXPECT_EQ(48, vectorRow[3]);
+}
+
+TEST(MatrixLib, TranspMatrixTest) {
+    Matrix<double, 4, 4> matrix1({  1, 2, 3, 4,
+                                    5, 6, 7, 8,
+                                    9, 10, 11, 12,
+                                    13, 14, 15, 16}
+                                );
+
+    Matrix<double, 4, 4> matrix2({  1, 5, 9, 13,
+                                    2, 6, 10, 14,
+                                    3, 7, 11, 15,
+                                    4, 8, 12, 16}
+                                );                                
+
+    Matrix<double> transpMatrix(matrix1.getRows(), matrix1.getCols());
+    transpMatrix = matrix1.transp();
+
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            EXPECT_EQ(matrix2(curRow, curCol), transpMatrix(curRow, curCol));
+        }
+    }
+}
+
 TEST(MatrixRow, ConstructorTest) {
     MatrixRow<double> matrix(3, 4);
     EXPECT_EQ(3, matrix.getSize());
