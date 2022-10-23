@@ -464,6 +464,54 @@ TEST(MatrixCol, AccessToMatrixElementsTest) {
     EXPECT_EQ(7, matrix1[6]);
 }
 
+TEST(MatrixLib, CreateMatrixFromVector) {
+    MatrixCol<double> matrixCol1({1, 2, 3});
+    MatrixCol<double> matrixCol2({4, 5, 6});
+    MatrixCol<double> matrixCol3({7, 8, 9});
+    MatrixCol<double> matrixCol4({10, 11, 12});
+    
+    Matrix<MatrixCol<double>, 2, 2> matrix({  matrixCol1, matrixCol2, matrixCol3, matrixCol4});
+
+    EXPECT_EQ(1, matrix(0, 0)[0]);
+    EXPECT_EQ(2, matrix(0, 0)[1]);
+    EXPECT_EQ(3, matrix(0, 0)[2]);
+
+    EXPECT_EQ(4, matrix(0, 1)[0]);
+    EXPECT_EQ(5, matrix(0, 1)[1]);
+    EXPECT_EQ(6, matrix(0, 1)[2]);
+
+    EXPECT_EQ(7, matrix(1, 0)[0]);
+    EXPECT_EQ(8, matrix(1, 0)[1]);
+    EXPECT_EQ(9, matrix(1, 0)[2]);
+
+    EXPECT_EQ(10, matrix(1, 1)[0]);
+    EXPECT_EQ(11, matrix(1, 1)[1]);
+    EXPECT_EQ(12, matrix(1, 1)[2]);
+
+    MatrixRow<double> matrixRow1({1, 2, 3});
+    MatrixRow<double> matrixRow2({4, 5, 6});
+    MatrixRow<double> matrixRow3({7, 8, 9});
+    MatrixRow<double> matrixRow4({10, 11, 12});
+    
+    Matrix<MatrixRow<double>, 2, 2> matrix2({  matrixRow1, matrixRow2, matrixRow3, matrixRow4});
+
+    EXPECT_EQ(1, matrix2(0, 0)[0]);
+    EXPECT_EQ(2, matrix2(0, 0)[1]);
+    EXPECT_EQ(3, matrix2(0, 0)[2]);
+
+    EXPECT_EQ(4, matrix2(0, 1)[0]);
+    EXPECT_EQ(5, matrix2(0, 1)[1]);
+    EXPECT_EQ(6, matrix2(0, 1)[2]);
+
+    EXPECT_EQ(7, matrix2(1, 0)[0]);
+    EXPECT_EQ(8, matrix2(1, 0)[1]);
+    EXPECT_EQ(9, matrix2(1, 0)[2]);
+
+    EXPECT_EQ(10, matrix2(1, 1)[0]);
+    EXPECT_EQ(11, matrix2(1, 1)[1]);
+    EXPECT_EQ(12, matrix2(1, 1)[2]);
+}
+
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

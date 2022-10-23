@@ -250,8 +250,10 @@ class Matrix {
         size_t getRows() const { return this->m_row; }
         size_t getCols() const { return this->m_col; }
 
-        double operator()(size_t cur_row, size_t cur_col) const;
-        double& operator()(size_t cur_row, size_t cur_col);
+        T operator()(size_t cur_row, size_t cur_col) const;
+        T& operator()(size_t cur_row, size_t cur_col);
+
+
 
         // извлечение диагонали строки или столбца 
         MatrixRow<T> getDiagonal();
@@ -318,7 +320,7 @@ Matrix<T, row, col>::Matrix(size_t _row, size_t _col) : m_row(_row), m_col(_col)
 }
 
 template <typename T, size_t row, size_t col>
-double Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) const {
+T Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) const {
     if (this->getRows() <= cur_row || this->getCols() <= cur_col) {
         throw "Out of range error";
     }
@@ -327,7 +329,7 @@ double Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) const {
 }
 
 template <typename T, size_t row, size_t col>
-double& Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) {
+T& Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) {
     if (this->getRows() <= cur_row || this->getCols() <= cur_col) {
         throw "Out of range error";
     }
