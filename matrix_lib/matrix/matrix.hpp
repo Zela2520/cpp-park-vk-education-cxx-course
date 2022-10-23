@@ -610,9 +610,33 @@ Matrix<T> Matrix<T, row, col>::adj() const {
     return new_matrix;
 }
 
-// template <typename T, size_t row, size_t col>
-// Matrix<T> Matrix<T, row, col>::inv() const {
-    
-// }
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::inv() const {
+    if (this->getRows() != this->getCols()) {
+        throw "don't do it just don't do it ";
+    }
+
+    double det_matrix = det();
+
+    if (det_matrix == 0) {
+        throw "don't do it just don't do it ";
+    }
+
+    if (this->getRows() == 1) {
+        Matrix<T> newmatrix(1, 1);
+        newmatrix(0, 0) = 1 / (*this)(0, 0);
+        return newmatrix;
+    }
+
+    const Matrix<T>& adj_matrix = adj();
+    Matrix<T> newmatrix(this->getRows(), this->getCols());
+
+    for (size_t i = 0; i < newmatrix.getRows(); ++i) {
+        for (size_t j = 0; j < newmatrix.getCols(); ++j) {
+            newmatrix(i, j) =  std::trunc((adj_matrix(i, j) / det_matrix) * eps) / eps;
+        }
+    }
+    return newmatrix;
+}
 
 #endif // MATRIX_LIB_MATRIX_MATRIX_HPP_

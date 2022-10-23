@@ -352,6 +352,62 @@ TEST(MatrixLib, AdjMatrixTest) {
     }
 }
 
+TEST(MatrixLib, InvMatrixTest) {
+    Matrix<double, 2, 2> matrix1({1, 2,
+                                5, 16});
+
+    Matrix<double, 2, 2> matrix2({ 2.66667, -0.333333,
+                                   -0.833333, 0.166667}
+                                );                                
+
+    Matrix<double> invMatrix(matrix1.getRows(), matrix1.getCols());
+    invMatrix = matrix1.inv();
+
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            EXPECT_TRUE(std::abs(matrix2(curRow, curCol) - invMatrix(curRow, curCol)) <= eps);
+        }
+    }
+
+
+    Matrix<double, 3, 3> matrix3({1, 2, 3,
+                                5, 16, 1,
+                                -1, 2, 2});
+
+    Matrix<double, 3, 3> matrix4({0.348837, 0.0232558, -0.534884,
+                                -0.127907, 0.0581395, 0.162791,
+                                0.302326, -0.0465116, 0.0697674});
+
+    Matrix<double> invMatrix2(matrix3.getRows(), matrix3.getCols());
+    invMatrix2 = matrix3.inv();
+
+    for (size_t curRow = 0; curRow < matrix3.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix3.getCols(); ++curCol) {
+            EXPECT_TRUE(std::abs(matrix4(curRow, curCol) - invMatrix2(curRow, curCol)) <= eps);
+        }
+    }
+
+
+    Matrix<double, 4, 4> matrix5({1, 2, 3, 5,
+                                16, 1, -1, 2,
+                                2, 8, 9, 10,
+                                1, -1, 6, 2});
+
+    Matrix<double, 4, 4> matrix6({-0.0503338, 0.0631741, 0.0077041, 0.0241397,
+                                -0.345146, 0.0046224, 0.195686, -0.120185,
+                                -0.206471, -0.0061633, 0.0724191, 0.160246,
+                                0.472008, -0.0107858, -0.123267, -0.0529019});
+
+    Matrix<double> invMatrix3(matrix5.getRows(), matrix5.getCols());
+    invMatrix3 = matrix5.inv();
+
+    for (size_t curRow = 0; curRow < matrix5.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix5.getCols(); ++curCol) {
+            EXPECT_TRUE(std::abs(matrix6(curRow, curCol) - invMatrix3(curRow, curCol)) <= eps);
+        }
+    }
+}
+
 TEST(MatrixRow, ConstructorTest) {
     MatrixRow<double> matrix(3, 4);
     EXPECT_EQ(3, matrix.getSize());
