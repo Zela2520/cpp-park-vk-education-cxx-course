@@ -185,6 +185,63 @@ TEST(MatrixLib, MatrixSubtractionTest) {
     }
 }
 
+TEST(MatrixLib, addValueToMatrix) {
+    Matrix<double, 2, 2> matrix1;
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> resMatrix(matrix1.getRows(), matrix1.getCols());
+    resMatrix = matrix1 + 3;
+
+    EXPECT_EQ(4, resMatrix(0, 0));
+    EXPECT_EQ(5, resMatrix(0, 1));
+    EXPECT_EQ(6, resMatrix(1, 0));
+    EXPECT_EQ(7, resMatrix(1, 1));
+}
+
+TEST(MatrixLib, subtractValueToMatrix) {
+    Matrix<double, 2, 2> matrix1;
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> resMatrix(matrix1.getRows(), matrix1.getCols());
+    resMatrix = matrix1 - 3;
+
+    EXPECT_EQ(-2, resMatrix(0, 0));
+    EXPECT_EQ(-1, resMatrix(0, 1));
+    EXPECT_EQ(0, resMatrix(1, 0));
+    EXPECT_EQ(1, resMatrix(1, 1));
+}
+
+TEST(MatrixLib, multiplyValueToMatrix) {
+    Matrix<double, 2, 2> matrix1;
+    double initValue = 1;
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            matrix1(curRow, curCol) = initValue;
+            ++initValue;
+        }
+    }
+
+    Matrix<double> resMatrix(matrix1.getRows(), matrix1.getCols());
+    resMatrix = matrix1 * 3;
+
+    EXPECT_EQ(3, resMatrix(0, 0));
+    EXPECT_EQ(6, resMatrix(0, 1));
+    EXPECT_EQ(9, resMatrix(1, 0));
+    EXPECT_EQ(12, resMatrix(1, 1));
+}
+
 TEST(MatrixLib, MatrixMultiplicationTest) {
     Matrix<double, 4, 4> matrix1;
     Matrix<double, 4, 4> matrix2;
@@ -621,6 +678,64 @@ TEST(MatrixRow, rowValueSubtractionTest) {
     EXPECT_EQ(-1, matrixSubtraction[1]);
     EXPECT_EQ(0, matrixSubtraction[2]);
 }
+
+
+
+
+
+TEST(MatrixCol, ColValueMultiplicationTest) {
+    MatrixCol<double> matrix(3, 0);
+    double multiplier = 3;
+    double initValue = 1;
+    for (size_t index = 0; index < matrix.getSize(); ++index) {
+        matrix[index] = initValue;
+        ++initValue;
+    }
+
+    MatrixCol<double> matrixMultiplication(3, 0);
+    matrixMultiplication = matrix * multiplier;
+
+    EXPECT_EQ(3, matrixMultiplication[0]);
+    EXPECT_EQ(6, matrixMultiplication[1]);
+    EXPECT_EQ(9, matrixMultiplication[2]);
+}
+
+TEST(MatrixCol, ColValueSumTest) {
+    MatrixCol<double> matrix(3, 0);
+    double addingValue = 3;
+    double initValue = 1;
+    for (size_t index = 0; index < matrix.getSize(); ++index) {
+        matrix[index] = initValue;
+        ++initValue;
+    }
+
+    MatrixCol<double> matrixSum(3, 0);
+    matrixSum = matrix + addingValue;
+
+    EXPECT_EQ(4, matrixSum[0]);
+    EXPECT_EQ(5, matrixSum[1]);
+    EXPECT_EQ(6, matrixSum[2]);
+}
+
+TEST(MatrixCol, ColValueSubtractionTest) {
+    MatrixCol<double> matrix(3, 0);
+    double substractionValue = 3;
+    double initValue = 1;
+    for (size_t index = 0; index < matrix.getSize(); ++index) {
+        matrix[index] = initValue;
+        ++initValue;
+    }
+
+    MatrixCol<double> matrixSubtraction(3, 0);
+    matrixSubtraction = matrix - substractionValue;
+
+    EXPECT_EQ(-2, matrixSubtraction[0]);
+    EXPECT_EQ(-1, matrixSubtraction[1]);
+    EXPECT_EQ(0, matrixSubtraction[2]);
+}
+
+
+
 
 TEST(MatrixRow, rowOnMatrixMultiplicationTest) {
     Matrix<double> matrix1(4, 3);

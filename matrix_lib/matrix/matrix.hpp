@@ -244,18 +244,15 @@ class MatrixCol {
         T operator[](size_t index) const;
         T& operator[](size_t index);
 
-        // Строка (+-*) строка(*столбец)
+        // Столбец (+-*) строка(*столбец)
         MatrixCol<T> operator+(const MatrixCol<T>& rhs) const;
         MatrixCol<T> operator-(const MatrixCol<T>& rhs) const;
         Matrix<T> operator*(const MatrixRow<T>& rhs) const;
 
-        // // Строка (+-*) число
-        // MatrixCol<T> operator*(T value) const;
-        // MatrixCol<T> operator-(T value) const;
-        // MatrixCol<T> operator+(T value) const;
-
-        // // Строка (*) матрица (разных размеров)
-        // MatrixCol<T> operator*(const Matrix<T>& rhs) const;
+        // Столбец (+-*) число
+        MatrixCol<T> operator*(T value) const;
+        MatrixCol<T> operator-(T value) const;
+        MatrixCol<T> operator+(T value) const;
     
     private:
         std::vector<T> m_matrix;
@@ -358,38 +355,48 @@ Matrix<T> MatrixCol<T, size>::operator*(const MatrixRow<T>& rhs) const {
 }
 
 
-// // Строка (+-*) число
-// template <typename T, size_t size>
-// MatrixCol<T> MatrixCol<T, size>::operator*(T value) const {
+// Строка (+-*) число
+template <typename T, size_t size>
+MatrixCol<T> MatrixCol<T, size>::operator*(T value) const {
+    if (!(this->getSize())) {
+        throw "error";
+    }
 
-// }
+    MatrixCol<T> matrixMultiplication(this->getSize(), 0);
 
-// template <typename T, size_t size>
-// MatrixCol<T> MatrixCol<T, size>::operator-(T value) const {
+    for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
+        matrixMultiplication[curRowIndex] = (*this)[curRowIndex] * value;
+    }
+    return matrixMultiplication;
+}
 
-// }
+template <typename T, size_t size>
+MatrixCol<T> MatrixCol<T, size>::operator-(T value) const {
+    if (!(this->getSize())) {
+        throw "error";
+    }
 
-// template <typename T, size_t size>
-// MatrixCol<T> MatrixCol<T, size>::operator+(T value) const {
+    MatrixCol<T> matrixMultiplication(this->getSize(), 0);
 
-// }
+    for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
+        matrixMultiplication[curRowIndex] = (*this)[curRowIndex] - value;
+    }
+    return matrixMultiplication;
+}
 
-// // Строка (*) матрица (разных размеров)
-// template <typename T, size_t size>
-// MatrixCol<T> MatrixCol<T, size>::operator*(const Matrix<T>& rhs) const {
+template <typename T, size_t size>
+MatrixCol<T> MatrixCol<T, size>::operator+(T value) const {
+    if (!(this->getSize())) {
+        throw "error";
+    }
 
-// }
+    MatrixCol<T> matrixMultiplication(this->getSize(), 0);
 
-
-
-
-
-
-
-
-
-
-
+    for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
+        matrixMultiplication[curRowIndex] = (*this)[curRowIndex] + value;
+    }
+    return matrixMultiplication;
+}
 
 
 ///////////////////////////////////////Simple matrix////////////////////////////////////////////////  
@@ -438,6 +445,8 @@ class Matrix {
         Matrix<T> operator-(const Matrix<T, row, col>& rhs) const;
         Matrix<T> operator*(const Matrix<T, row, col>& rhs) const;
 
+        Matrix<T> operator+(T val) const;
+        Matrix<T> operator-(T val) const;
         // правостороннее
         Matrix<T> operator*(T val) const;
         // левостороннее
@@ -661,6 +670,30 @@ Matrix<T> Matrix<T, row, col>::operator*(const Matrix<T, row, col>& rhs) const {
     }
 
     return multiplicationMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator+(T val) const {
+    Matrix<T> sumMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            sumMatrix(curRow, curCol) = (*this)(curRow, curCol) + val;
+        }
+    }
+    return sumMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::operator-(T val) const {
+    Matrix<T> subtractionMatrix(this->m_row, this->m_col);
+
+    for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
+        for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
+            subtractionMatrix(curRow, curCol) = (*this)(curRow, curCol) - val;
+        }
+    }
+    return subtractionMatrix;
 }
 
 template <typename T, size_t row, size_t col>
