@@ -296,6 +296,62 @@ TEST(MatrixLib, DetMatrixTest) {
     EXPECT_EQ(-1947, det3);
 }
 
+TEST(MatrixLib, AdjMatrixTest) {
+    Matrix<double, 2, 2> matrix1({1, 2,
+                                5, 16});
+
+    Matrix<double, 2, 2> matrix2({ 16, -2,
+                                   -5, 1}
+                                );                                 
+
+    Matrix<double> adjMatrix(matrix1.getRows(), matrix1.getCols());
+    adjMatrix = matrix1.adj();
+
+    for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
+            EXPECT_EQ(matrix2(curRow, curCol), adjMatrix(curRow, curCol));
+        }
+    }
+
+
+    Matrix<double, 3, 3> matrix3({1, 2, 3,
+                                5, 16, 1,
+                                -1, 2, 2});
+
+    Matrix<double, 3, 3> matrix4({30, 2, -46,
+                                -11, 5, 14,
+                                26, -4, 6});                                
+
+    Matrix<double> adjMatrix2(matrix3.getRows(), matrix3.getCols());
+    adjMatrix2 = matrix3.adj();
+
+    for (size_t curRow = 0; curRow < matrix3.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix3.getCols(); ++curCol) {
+            EXPECT_EQ(matrix4(curRow, curCol), adjMatrix2(curRow, curCol));
+        }
+    }
+
+
+    Matrix<double, 4, 4> matrix5({1, 2, 3, 5,
+                                16, 1, -1, 2,
+                                2, 8, 9, 10,
+                                1, -1, 6, 2});
+
+    Matrix<double, 4, 4> matrix6({98, -123, -15, -47,
+                                672, -9, -381, 234,
+                                402, 12, -141, -312,
+                                -919, 21, 240, 103});
+
+    Matrix<double> adjMatrix3(matrix5.getRows(), matrix5.getCols());
+    adjMatrix3 = matrix5.adj();
+
+    for (size_t curRow = 0; curRow < matrix5.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix5.getCols(); ++curCol) {
+            EXPECT_EQ(matrix6(curRow, curCol), adjMatrix3(curRow, curCol));
+        }
+    }
+}
+
 TEST(MatrixRow, ConstructorTest) {
     MatrixRow<double> matrix(3, 4);
     EXPECT_EQ(3, matrix.getSize());

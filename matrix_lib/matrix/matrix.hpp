@@ -282,8 +282,8 @@ class Matrix {
 
         template <typename T1, size_t N, size_t M>
         friend void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix);
-
-        friend Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>* new_matrix);
+        template <typename T2, size_t N1, size_t M1>
+        friend Matrix<T2> returnFilledMinor(const Matrix<T2, N1, M1>& matrix, size_t del_row, size_t del_col, Matrix<T2>* new_matrix);
 
         Matrix<T> transp() const;
         T det() const;
@@ -562,7 +562,8 @@ T Matrix<T, row, col>::det() const {
     return sum_res;
 }
 
-Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix) {
+template <typename T2, size_t N1, size_t M1>
+Matrix<T2> returnFilledMinor(const Matrix<T2, N1, M1>& matrix, size_t del_row, size_t del_col, Matrix<T2>* new_matrix) {
     size_t miss_rows = 0;
 
     for (size_t i = 0; i < matrix.getRows(); ++i) {
@@ -571,22 +572,43 @@ Matrix<double>& returnFilledMinor(const Matrix<double>& matrix, size_t del_row, 
 
             for (size_t j = 0; j < matrix.getCols(); ++j) {
                 if (del_col != j) {
-                    new_matrix(i - miss_rows, j - miss_cols) = matrix(i, j);
+                    (*new_matrix)(i - miss_rows, j - miss_cols) = matrix(i, j);
                 } else {
                     ++miss_cols;
                 }
             }
-        }   else {
+        } else {
             ++miss_rows;
+        }
+    }
+
+    return *new_matrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T> Matrix<T, row, col>::adj() const {
+    if (this->getRows() != this->getCols()) {
+        throw "i repeat will the real slim shady please stand up";
+    }
+
+    const Matrix<T>& transpon_matrix = transp();
+    Matrix<T> new_matrix(this->getRows(), this->getCols());
+    Matrix<T> minor_matrix(this->getRows() - 1, this->getCols() - 1);
+
+    for (size_t i = 0; i < transpon_matrix.getRows(); ++i) {
+        for (size_t j = 0; j < transpon_matrix.getCols(); ++j) {
+            double minor_res = 0.0;
+            minor_res = returnFilledMinor(transpon_matrix, i, j, &minor_matrix).det();
+            int minor_sign = 1;
+
+            if (((i + 1) + (j + 1)) % 2 == TRUE) {
+                minor_sign = -1;
+            }
+            new_matrix(i, j) = std::trunc((minor_res * minor_sign) * eps) / eps;
         }
     }
     return new_matrix;
 }
-
-// template <typename T, size_t row, size_t col>
-// Matrix<T> Matrix<T, row, col>::adj() const {
-    
-// }
 
 // template <typename T, size_t row, size_t col>
 // Matrix<T> Matrix<T, row, col>::inv() const {
