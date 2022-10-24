@@ -31,24 +31,24 @@ class OutOfRange: public MatrixException {
   ) {}
 };
 
-// class DimensionMismatch: public MatrixException {
-//  public:
-//   DimensionMismatch(const Matrix<double>& m1, const Matrix<double>& m2)
-//       : MatrixException(
-//       "M1[" + std::to_string(m1.getRows()) + ", " + std::to_string(m1.getCols()) + "] and M2[" +
-//       std::to_string(m2.getRows()) + ", " + std::to_string(m2.getCols()) + "] are not compatible"
-//   ) {}
+class DimensionMismatch: public MatrixException {
+ public:
+  DimensionMismatch(const Matrix<double>& m1, const Matrix<double>& m2)
+      : MatrixException(
+      "M1[" + std::to_string(m1.getRows()) + ", " + std::to_string(m1.getCols()) + "] and M2[" +
+      std::to_string(m2.getRows()) + ", " + std::to_string(m2.getCols()) + "] are not compatible"
+  ) {}
 
-//   explicit DimensionMismatch(const Matrix<double>& m)
-//       : MatrixException(
-//       "M[" + std::to_string(m.getRows()) + ", " + std::to_string(m.getCols()) + "] isn't square matrix"
-//   ) {}
-// };
+  explicit DimensionMismatch(const Matrix<double>& m)
+      : MatrixException(
+      "M[" + std::to_string(m.getRows()) + ", " + std::to_string(m.getCols()) + "] isn't square matrix"
+  ) {}
+};
 
-// class SingularMatrix: public MatrixException {
-//  public:
-//   SingularMatrix()
-//       : MatrixException("Singular matrix") {}
-// };
+class SingularMatrix: public MatrixException {
+ public:
+  SingularMatrix()
+      : MatrixException("Singular matrix") {}
+};
 
 #endif // MATRIX_LIB_MATRIX_EXCEPTION_HPP_
