@@ -7,7 +7,7 @@ find_package(GTest REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCES})
 
-target_include_directories(${PROJECT_NAME} PUBLIC ${MATRIX_LIB_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${MATRIX_LIBRARIES} ${GTEST_LIBRARIES})
+target_include_directories(${PROJECT_NAME} PUBLIC ${MATRIX_LIB_INCLUDE_DIRS})
 
 gtest_discover_tests(${PROJECT_NAME})
