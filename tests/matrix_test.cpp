@@ -1,7 +1,6 @@
 #include "gtest/gtest.h"
 
 #include "exception.hpp"
-#include "utils.hpp"
 #include <iostream>
 
 

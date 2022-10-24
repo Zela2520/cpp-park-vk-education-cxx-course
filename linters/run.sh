@@ -13,7 +13,4 @@ cppcheck matrix_lib/matrix/*.cpp matrix_lib/main.c --enable=all --inconclusive -
 print_header "RUN clang-tidy"
 clang-tidy matrix_lib/matrix/*.cpp matrix_lib/main.cpp -- -std=c++20 -Imatrix_lib/matrix
 
-# print_header "RUN cpplint"
-# check_log "cpplint --extensions=cpp matrix_lib/matrix/*" "Can't open for reading"
-
 print_header "SUCCESS"
