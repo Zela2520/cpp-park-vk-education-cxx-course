@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14)
-project(matrix_simple)
+project(matrix_col)
 
 file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
