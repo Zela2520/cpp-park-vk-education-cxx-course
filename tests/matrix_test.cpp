@@ -445,7 +445,7 @@ TEST(MatrixLib, InvMatrixTest) {
 
     for (size_t curRow = 0; curRow < matrix1.getRows(); ++curRow) {
         for (size_t curCol = 0; curCol < matrix1.getCols(); ++curCol) {
-            EXPECT_TRUE(std::abs(matrix2(curRow, curCol) - invMatrix(curRow, curCol)) <= eps);
+            EXPECT_TRUE(std::abs(matrix2(curRow, curCol) - invMatrix(curRow, curCol)) < 1e-3);
         }
     }
 
@@ -463,7 +463,7 @@ TEST(MatrixLib, InvMatrixTest) {
 
     for (size_t curRow = 0; curRow < matrix3.getRows(); ++curRow) {
         for (size_t curCol = 0; curCol < matrix3.getCols(); ++curCol) {
-            EXPECT_TRUE(std::abs(matrix4(curRow, curCol) - invMatrix2(curRow, curCol)) <= eps);
+            EXPECT_TRUE(std::abs(matrix4(curRow, curCol) - invMatrix2(curRow, curCol)) <= 1e-3);
         }
     }
 
@@ -483,7 +483,7 @@ TEST(MatrixLib, InvMatrixTest) {
 
     for (size_t curRow = 0; curRow < matrix5.getRows(); ++curRow) {
         for (size_t curCol = 0; curCol < matrix5.getCols(); ++curCol) {
-            EXPECT_TRUE(std::abs(matrix6(curRow, curCol) - invMatrix3(curRow, curCol)) <= eps);
+            EXPECT_TRUE(std::abs(matrix6(curRow, curCol) - invMatrix3(curRow, curCol)) <= 1e-3);
         }
     }
 }
