@@ -7,10 +7,10 @@ template <typename T, size_t size>
 class MatrixCol {
     public:
         MatrixCol();
-        MatrixCol(size_t _size, T _dafaultValue);
+        MatrixCol(size_t _size, T _defaultValue);
         explicit MatrixCol(const std::initializer_list<T> &list);
         MatrixCol(const MatrixCol& rhs) = default;
-        MatrixCol& operator=(const MatrixCol& rhs);
+        MatrixCol<T, size>& operator=(const MatrixCol<T, size>& rhs);
         ~MatrixCol() = default;
 
         
@@ -20,17 +20,17 @@ class MatrixCol {
         T& operator[](size_t index);
 
         // Столбец (+-*) строка(*столбец)
-        MatrixCol<T> operator+(const MatrixCol<T>& rhs) const;
-        MatrixCol<T> operator-(const MatrixCol<T>& rhs) const;
-        Matrix<T> operator*(const MatrixRow<T>& rhs) const;
+        MatrixCol<T, size> operator+(const MatrixCol<T, size>& rhs) const;
+        MatrixCol<T, size> operator-(const MatrixCol<T, size>& rhs) const;
+        Matrix<T> operator*(const MatrixRow<T, size>& rhs) const;
 
         // Столбец (+-*) число
-        MatrixCol<T> operator*(T value) const;
-        MatrixCol<T> operator-(T value) const;
-        MatrixCol<T> operator+(T value) const;
+        MatrixCol<T, size> operator*(T value) const;
+        MatrixCol<T, size> operator-(T value) const;
+        MatrixCol<T, size> operator+(T value) const;
     
     private:
-        std::vector<T> m_matrix;
+        std::array<T, size> m_matrix;
         size_t m_size;
 };
 

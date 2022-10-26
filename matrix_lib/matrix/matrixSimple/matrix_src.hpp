@@ -4,7 +4,9 @@ template <typename T, size_t row, size_t col>
 Matrix<T, row, col>::Matrix() {
     this->m_row = row;
     this->m_col = col;
-    this->m_matrix.resize(this->m_row * this->m_col, 0);
+    for (size_t index = 0; index < m_row * m_col; ++index) {
+        this->m_matrix.push_back(T{});    
+    }
 }
 
 template <typename T, size_t row, size_t col>
@@ -32,15 +34,19 @@ T Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) const {
 
 template <typename T, size_t row, size_t col>
 T& Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) {
-    if (this->getRows() <= cur_row || this->getCols() <= cur_col) {
-        throw "Out of range error";
+    try {
+        if (this->getRows() <= cur_row || this->getCols() <= cur_col) {
+            throw "Out of range error";
+        }
+    } catch (std::string& error) {
+        std::cout << error << std::endl;
     }
 
     return this->m_matrix[(cur_row * this->m_col) + cur_col];
 }
 
 template <typename T, size_t row, size_t col>
-MatrixRow<T> Matrix<T, row, col>::getDiagonal() {
+MatrixRow<T, col> Matrix<T, row, col>::getDiagonal() {
     try {
         if (m_col != m_row) {
             throw "error";
@@ -50,7 +56,7 @@ MatrixRow<T> Matrix<T, row, col>::getDiagonal() {
     }
 
 
-    MatrixRow<T> mainDiagonal(this->m_col, 0);
+    MatrixRow<T, col> mainDiagonal;
     for (size_t i = 0; i < mainDiagonal.getSize(); ++i) {
         mainDiagonal[i] = (*this)(i, i);
     }
@@ -59,7 +65,7 @@ MatrixRow<T> Matrix<T, row, col>::getDiagonal() {
 }
 
 template <typename T, size_t row, size_t col>
-MatrixRow<T> Matrix<T, row, col>::getRow(size_t rowNumber) {
+MatrixRow<T, col> Matrix<T, row, col>::getRow(size_t rowNumber) {
     try {
         if (rowNumber >= m_row) {
             throw "errror";
@@ -68,7 +74,7 @@ MatrixRow<T> Matrix<T, row, col>::getRow(size_t rowNumber) {
         std::cout << error << std::endl;
     }
 
-    MatrixRow<T> vectorRow(this->m_col, 0);
+    MatrixRow<T, col> vectorRow;
     size_t index = 0;
     for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
         vectorRow[index] = this->m_matrix[rowNumber * this->m_col + curCol];
@@ -79,7 +85,7 @@ MatrixRow<T> Matrix<T, row, col>::getRow(size_t rowNumber) {
 }
 
 template <typename T, size_t row, size_t col>
-MatrixCol<T> Matrix<T, row, col>::getCol(size_t colNumber) {
+MatrixCol<T, row> Matrix<T, row, col>::getCol(size_t colNumber) {
     try {
         if (colNumber >= m_col) {
             throw "errror";
@@ -88,7 +94,7 @@ MatrixCol<T> Matrix<T, row, col>::getCol(size_t colNumber) {
         std::cout << error << std::endl;
     }
 
-    MatrixCol<T> vectorCol(this->m_row, 0);
+    MatrixCol<T, row> vectorCol;
     size_t index = 0;
     for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
         vectorCol[index] = this->m_matrix[curRow * this->m_col + colNumber];
@@ -368,7 +374,7 @@ Matrix<T> Matrix<T, row, col>::inv() const {
 }
 
 template <typename T, size_t row, size_t col>
-Matrix<T> Matrix<T, row, col>::operator+(const MatrixRow<T>& rhs) const {
+Matrix<T> Matrix<T, row, col>::operator+(const MatrixRow<T,col>& rhs) const {
     if (this->getCols() != rhs.getSize()) {
         throw "error";
     }
@@ -385,7 +391,7 @@ Matrix<T> Matrix<T, row, col>::operator+(const MatrixRow<T>& rhs) const {
 }
 
 template <typename T, size_t row, size_t col>
-Matrix<T> Matrix<T, row, col>::operator-(const MatrixRow<T>& rhs) const {
+Matrix<T> Matrix<T, row, col>::operator-(const MatrixRow<T, col>& rhs) const {
     if (this->getCols() != rhs.getSize()) {
         throw "error";
     }
@@ -402,8 +408,8 @@ Matrix<T> Matrix<T, row, col>::operator-(const MatrixRow<T>& rhs) const {
 }
 
 template <typename T, size_t row, size_t col>
-Matrix<T> Matrix<T, row, col>::operator+(const MatrixCol<T>& rhs) const {
-    if (this->getCols() != rhs.getSize()) {
+Matrix<T> Matrix<T, row, col>::operator+(const MatrixCol<T, row>& rhs) const {
+    if (this->getRows() != rhs.getSize()) {
         throw "error";
     }
 
@@ -411,7 +417,7 @@ Matrix<T> Matrix<T, row, col>::operator+(const MatrixCol<T>& rhs) const {
 
     for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
         for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
-            resMatrix(curRow, curCol) = (*this)(curRow, curCol) + rhs[curCol];
+            resMatrix(curRow, curCol) = (*this)(curRow, curCol) + rhs[curRow];
         }
     }
 
@@ -419,8 +425,8 @@ Matrix<T> Matrix<T, row, col>::operator+(const MatrixCol<T>& rhs) const {
 }
 
 template <typename T, size_t row, size_t col>
-Matrix<T> Matrix<T, row, col>::operator-(const MatrixCol<T>& rhs) const {
-    if (this->getCols() != rhs.getSize()) {
+Matrix<T> Matrix<T, row, col>::operator-(const MatrixCol<T, row>& rhs) const {
+    if (this->getRows() != rhs.getSize()) {
         throw "error";
     }
 
@@ -428,7 +434,7 @@ Matrix<T> Matrix<T, row, col>::operator-(const MatrixCol<T>& rhs) const {
 
     for (size_t curRow = 0; curRow < this->m_row; ++curRow) {
         for (size_t curCol = 0; curCol < this->m_col; ++curCol) {
-            resMatrix(curRow, curCol) = (*this)(curRow, curCol) - rhs[curCol];
+            resMatrix(curRow, curCol) = (*this)(curRow, curCol) - rhs[curRow];
         }
     }
 
@@ -436,21 +442,18 @@ Matrix<T> Matrix<T, row, col>::operator-(const MatrixCol<T>& rhs) const {
 }
 
 template <typename T, size_t row, size_t col>
-MatrixCol<T> Matrix<T, row, col>::operator*(const MatrixCol<T>& rhs) const {
+MatrixCol<T, row> Matrix<T, row, col>::operator*(const MatrixCol<T, row>& rhs) const {
     if (this->getCols() != rhs.getSize()) {
         throw "error";
     }
 
-    MatrixCol<T> resMatrix(this->getRows(), 0);
+    MatrixCol<T, row> resMatrix;
 
     for (size_t curRow = 0; curRow < this->getRows(); ++curRow) {
         T tempRes = 0;
         for (size_t curCol = 0; curCol < this->getCols(); ++curCol) {
             tempRes += (*this)(curRow, curCol) * rhs[curCol];
-            std::cout << rhs[curCol] << "matrix elem" << std::endl;
-            std::cout << (*this)(curRow, curCol) << "matrixCol elem" << std::endl;
         }
-        std::cout << tempRes << std::endl;
         resMatrix[curRow] = tempRes;
     }
 

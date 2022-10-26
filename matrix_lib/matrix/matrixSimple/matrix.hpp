@@ -24,15 +24,27 @@ class Matrix {
         explicit Matrix(const std::initializer_list<T> &list);
         explicit Matrix(size_t _row, size_t _col);
         Matrix(const Matrix& rhs) = default;
-        Matrix<T>& operator=(const Matrix<T>& rhs) {
+        Matrix<T, row, col>& operator=(const Matrix<T>& rhs) {
+            try {
+                if (rhs.getSize() != this->getSize()) {
+                    throw "size equal error";
+                }
+            } catch (const std::string& e) {
+                std::cout << "Error: " << e << std::endl;
+            }
+
+
             this->m_row = rhs.getRows();
             this->m_col = rhs.getCols();
 
             this->m_matrix.resize(m_row * m_col, 0);
+
             size_t index = 0;
-            for (auto& elem : rhs.m_matrix) {
-                this->m_matrix[index] = elem;
-                ++index;
+            for (size_t curRow = 0; curRow < rhs.getRows(); ++curRow) {
+                for (size_t curCol = 0; curCol < rhs.getCols(); ++curCol) {
+                    this->m_matrix[index] = rhs(curRow, curCol);
+                    ++index;
+                }
             }
 
             return *this;
@@ -48,12 +60,10 @@ class Matrix {
         T& operator()(size_t cur_row, size_t cur_col);
 
 
-
         // извлечение диагонали строки или столбца 
-        MatrixRow<T> getDiagonal();
-        MatrixRow<T> getRow(size_t rowNumber);
-        MatrixCol<T> getCol(size_t colNumber);
-        // 
+        MatrixRow<T, col> getDiagonal();
+        MatrixRow<T, col> getRow(size_t rowNumber);
+        MatrixCol<T, row> getCol(size_t colNumber);
 
         bool operator==(const Matrix<T, row, col>& rhs) const;
         bool operator!=(const Matrix<T, row, col>& rhs) const;
@@ -62,15 +72,13 @@ class Matrix {
         Matrix<T> operator-(const Matrix<T, row, col>& rhs) const;
         Matrix<T> operator*(const Matrix<T, row, col>& rhs) const;
 
-        // вот эта протестить и усе
-        Matrix<T> operator+(const MatrixRow<T>& rhs) const;
-        Matrix<T> operator-(const MatrixRow<T>& rhs) const;
+        Matrix<T> operator+(const MatrixRow<T, col>& rhs) const;
+        Matrix<T> operator-(const MatrixRow<T, col>& rhs) const;
 
-        Matrix<T> operator+(const MatrixCol<T>& rhs) const;
-        Matrix<T> operator-(const MatrixCol<T>& rhs) const;
+        Matrix<T> operator+(const MatrixCol<T, row>& rhs) const;
+        Matrix<T> operator-(const MatrixCol<T, row>& rhs) const;
 
-        MatrixCol<T> operator*(const MatrixCol<T>& rhs) const;
-        // вот эта протестить и усе
+        MatrixCol<T, row> operator*(const MatrixCol<T, row>& rhs) const;
 
         Matrix<T> operator+(T val) const;
         Matrix<T> operator-(T val) const;

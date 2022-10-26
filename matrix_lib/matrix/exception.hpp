@@ -1,5 +1,4 @@
-#ifndef MATRIX_LIB_MATRIX_MATRIX_EXCEPTION_HPP_
-#define MATRIX_LIB_MATRIX_MATRIX_EXCEPTION_HPP_
+#pragma once // NOLINT
 
 #include <exception>
 #include "matrix.hpp"
@@ -50,5 +49,3 @@ class SingularMatrix: public MatrixException {
   SingularMatrix()
       : MatrixException("Singular matrix") {}
 };
-
-#endif // MATRIX_LIB_MATRIX_EXCEPTION_HPP_

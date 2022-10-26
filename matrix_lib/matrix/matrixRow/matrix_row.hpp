@@ -1,6 +1,6 @@
 #pragma once // NOLINT
 
-#include <vector>
+#include <array>
 #include <functional>
 #include <stdexcept>
 #include <algorithm>
@@ -10,6 +10,7 @@
 #include <set>
 #include <complex>
 #include <string>
+#include <vector>
 
 class MatrixException;
 class InvalidMatrixStream;
@@ -27,10 +28,10 @@ template <typename T = double, size_t size = 1>
 class MatrixRow {
     public:
         MatrixRow();
-        MatrixRow(size_t _size, T _dafaultValue);
+        MatrixRow(size_t _size, T _defaultValue);
         explicit MatrixRow(const std::initializer_list<T> &list);
         MatrixRow(const MatrixRow& rhs) = default;
-        MatrixRow<T>& operator=(const MatrixRow<T>& rhs);
+        MatrixRow<T, size>& operator=(const MatrixRow<T, size>& rhs);
         ~MatrixRow() = default; 
         
         size_t getSize() const {return m_matrix.size();};
@@ -39,20 +40,20 @@ class MatrixRow {
         T& operator[](size_t index);
 
         // Строка (+-*) строка(*столбец)
-        MatrixRow<T> operator+(const MatrixRow<T>& rhs) const;
-        MatrixRow<T> operator-(const MatrixRow<T>& rhs) const;
-        T operator*(const MatrixCol<T>& rhs) const;
+        MatrixRow<T, size> operator+(const MatrixRow<T, size>& rhs) const;
+        MatrixRow<T, size> operator-(const MatrixRow<T, size>& rhs) const;
+        T operator*(const MatrixCol<T, size>& rhs) const;
 
         // Строка (+-*) число
-        MatrixRow<T> operator*(T value) const;
-        MatrixRow<T> operator-(T value) const;
-        MatrixRow<T> operator+(T value) const;
+        MatrixRow<T, size> operator*(T value) const;
+        MatrixRow<T, size> operator-(T value) const;
+        MatrixRow<T, size> operator+(T value) const;
 
         // Строка (*) матрица (разных размеров)
-        MatrixRow<T> operator*(const Matrix<T>& rhs) const;
+        MatrixRow<T, size> operator*(const Matrix<T>& rhs) const;
         
     private:
-        std::vector<T> m_matrix;
+        std::array<T, size> m_matrix;
         size_t m_size;
 };
 

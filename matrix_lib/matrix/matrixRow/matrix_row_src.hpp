@@ -3,30 +3,34 @@
 template <typename T, size_t size>
 MatrixRow<T, size>::MatrixRow() {
     m_size = size;
-    this->m_matrix.resize(size, 0);
+    this->m_matrix.fill(0);
 }
 
 template <typename T, size_t size>
-MatrixRow<T, size>::MatrixRow(size_t _size, T _dafaultValue) : m_size(_size) {
-    this->m_matrix.resize(this->m_size, _dafaultValue);
+MatrixRow<T, size>::MatrixRow(size_t _size, T _defaultValue) {
+    m_size = _size;
+    m_size = size;
+    this->m_matrix.fill(_defaultValue);
 }
 
 template <typename T, size_t size>
 MatrixRow<T, size>::MatrixRow(const std::initializer_list<T> &list) {
-    for (const auto &elem : list) {
-        m_matrix.push_back(elem);
+    m_size = size;
+    size_t index = 0;
+    for (const auto& elem : list) {
+        m_matrix[index] = elem;
+        ++index;
     }
-    m_size = m_matrix.size();
 }
 
 template <typename T, size_t size>
-MatrixRow<T>& MatrixRow<T, size>::operator=(const MatrixRow<T>& rhs) {
-    this->m_size = rhs.getSize();
-    this->m_matrix.resize(m_size, 0);
-    size_t i = 0;
+MatrixRow<T, size>& MatrixRow<T, size>::operator=(const MatrixRow<T, size>& rhs) {
+    if (this->m_matrix.size() != rhs.m_matrix.size()) {
+        throw "error";
+    }
+
     for (size_t j = 0; j < rhs.getSize(); ++j) {
-        (*this)[i] = rhs[j];
-        ++i;
+        (*this)[j] = rhs[j];
     }
 
     return *this;
@@ -51,12 +55,12 @@ T& MatrixRow<T, size>::operator[](size_t index) {
 }
 
 template <typename T, size_t size>
-MatrixRow<T> MatrixRow<T, size>::operator+(const MatrixRow<T>& rhs) const {
+MatrixRow<T, size> MatrixRow<T, size>::operator+(const MatrixRow<T, size>& rhs) const {
     if (this->getSize() != rhs.getSize()) {
         throw "error";
     }
 
-    MatrixRow<T> sumMatrix(this->getSize(), 0);
+    MatrixRow<T, size> sumMatrix(this->getSize(), 0);
 
     for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
         sumMatrix[curRowIndex] = (*this)[curRowIndex] + rhs[curRowIndex];
@@ -65,12 +69,12 @@ MatrixRow<T> MatrixRow<T, size>::operator+(const MatrixRow<T>& rhs) const {
 }
 
 template <typename T, size_t size>
-MatrixRow<T> MatrixRow<T, size>::operator-(const MatrixRow<T>& rhs) const {
+MatrixRow<T, size> MatrixRow<T, size>::operator-(const MatrixRow<T, size>& rhs) const {
     if (this->getSize() != rhs.getSize()) {
         throw "error";
     }
 
-    MatrixRow<T> matrixSubtraction(this->getSize(), 0);
+    MatrixRow<T, size> matrixSubtraction(this->getSize(), 0);
 
     for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
         matrixSubtraction[curRowIndex] = (*this)[curRowIndex] - rhs[curRowIndex];
@@ -79,7 +83,7 @@ MatrixRow<T> MatrixRow<T, size>::operator-(const MatrixRow<T>& rhs) const {
 }
 
 template <typename T, size_t size>
-T MatrixRow<T, size>::operator*(const MatrixCol<T>& rhs) const {
+T MatrixRow<T, size>::operator*(const MatrixCol<T, size>& rhs) const {
     if (this->getSize() != rhs.getSize()) {
         throw "error";
     }
@@ -94,12 +98,12 @@ T MatrixRow<T, size>::operator*(const MatrixCol<T>& rhs) const {
 }
 
 template <typename T, size_t size>
-MatrixRow<T> MatrixRow<T, size>::operator*(T value) const {
+MatrixRow<T, size> MatrixRow<T, size>::operator*(T value) const {
     if (!(this->getSize())) {
         throw "error";
     }
 
-    MatrixRow<T> matrixMultiplication(this->getSize(), 0);
+    MatrixRow<T, size> matrixMultiplication(this->getSize(), 0);
 
     for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
         matrixMultiplication[curRowIndex] = (*this)[curRowIndex] * value;
@@ -108,12 +112,12 @@ MatrixRow<T> MatrixRow<T, size>::operator*(T value) const {
 }
 
 template <typename T, size_t size>
-MatrixRow<T> MatrixRow<T, size>::operator-(T value) const {
+MatrixRow<T, size> MatrixRow<T, size>::operator-(T value) const {
     if (!(this->getSize())) {
         throw "error";
     }
 
-    MatrixRow<T> matrixSubtraction(this->getSize(), 0);
+    MatrixRow<T, size> matrixSubtraction(this->getSize(), 0);
 
     for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
         matrixSubtraction[curRowIndex] = (*this)[curRowIndex] - value;
@@ -123,12 +127,12 @@ MatrixRow<T> MatrixRow<T, size>::operator-(T value) const {
 }
 
 template <typename T, size_t size>
-MatrixRow<T> MatrixRow<T, size>::operator+(T value) const {
+MatrixRow<T, size> MatrixRow<T, size>::operator+(T value) const {
     if (!(this->getSize())) {
         throw "error";
     }
 
-    MatrixRow<T> sumMatrix(this->getSize(), 0);
+    MatrixRow<T, size> sumMatrix(this->getSize(), 0);
 
     for (size_t curRowIndex = 0; curRowIndex < this->getSize(); ++curRowIndex) {
         sumMatrix[curRowIndex] = (*this)[curRowIndex] + value;
@@ -137,12 +141,12 @@ MatrixRow<T> MatrixRow<T, size>::operator+(T value) const {
 }
 
 template <typename T, size_t size>
-MatrixRow<T> MatrixRow<T, size>::operator*(const Matrix<T>& rhs) const {
-    if (this->getSize() != rhs.getRows()) {
+MatrixRow<T, size> MatrixRow<T, size>::operator*(const Matrix<T>& rhs) const {
+    if (this->getSize() != rhs.getRows() || this->getSize() != rhs.getCols()) {
         throw "error";
     }
 
-    MatrixRow<T> matrixMultiplication(rhs.getCols(), 0);
+    MatrixRow<T, size> matrixMultiplication(rhs.getCols(), 0);
 
     for (size_t j = 0; j < rhs.getCols(); ++j) {
         T tempRes = 0;
