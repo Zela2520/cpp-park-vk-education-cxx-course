@@ -17,6 +17,7 @@ class InvalidMatrixStream;
 class OutOfRange;
 
 #define EPS (std::numeric_limits<double>::epsilon()*1e-07)
+#define eps2 1e7
 
 template <typename T = double, size_t row = 1, size_t col = 1>
 class Matrix;

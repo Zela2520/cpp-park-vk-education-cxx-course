@@ -5,7 +5,7 @@ Matrix<T, row, col>::Matrix() {
     this->m_row = row;
     this->m_col = col;
     for (size_t index = 0; index < m_row * m_col; ++index) {
-        this->m_matrix.push_back(T{});    
+        this->m_matrix.push_back(std::move(T{}));
     }
 }
 
@@ -14,7 +14,7 @@ Matrix<T, row, col>::Matrix(const std::initializer_list<T> &list) {
     m_row = row;
     m_col = col;
     for (auto &elem : list) {
-        m_matrix.push_back(elem);
+        m_matrix.push_back(std::move(elem));
     }
 }
 
@@ -34,12 +34,8 @@ T Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) const {
 
 template <typename T, size_t row, size_t col>
 T& Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) {
-    try {
-        if (this->getRows() <= cur_row || this->getCols() <= cur_col) {
-            throw "Out of range error";
-        }
-    } catch (std::string& error) {
-        std::cout << error << std::endl;
+    if (this->getRows() <= cur_row || this->getCols() <= cur_col) {
+        throw "Out of range error";
     }
 
     return this->m_matrix[(cur_row * this->m_col) + cur_col];
@@ -47,12 +43,8 @@ T& Matrix<T, row, col>::operator()(size_t cur_row, size_t cur_col) {
 
 template <typename T, size_t row, size_t col>
 MatrixRow<T, col> Matrix<T, row, col>::getDiagonal() {
-    try {
-        if (m_col != m_row) {
-            throw "error";
-        }
-    } catch (std::string& error) {
-        std::cout << error << std::endl;
+    if (m_col != m_row) {
+        throw "error";
     }
 
 
@@ -66,12 +58,8 @@ MatrixRow<T, col> Matrix<T, row, col>::getDiagonal() {
 
 template <typename T, size_t row, size_t col>
 MatrixRow<T, col> Matrix<T, row, col>::getRow(size_t rowNumber) {
-    try {
-        if (rowNumber >= m_row) {
-            throw "errror";
-        }
-    } catch (std::string& error) {
-        std::cout << error << std::endl;
+    if (rowNumber >= m_row) {
+        throw "errror";
     }
 
     MatrixRow<T, col> vectorRow;
@@ -86,12 +74,8 @@ MatrixRow<T, col> Matrix<T, row, col>::getRow(size_t rowNumber) {
 
 template <typename T, size_t row, size_t col>
 MatrixCol<T, row> Matrix<T, row, col>::getCol(size_t colNumber) {
-    try {
-        if (colNumber >= m_col) {
-            throw "errror";
-        }
-    } catch (std::string& error) {
-        std::cout << error << std::endl;
+    if (colNumber >= m_col) {
+        throw "errror";
     }
 
     MatrixCol<T, row> vectorCol;
@@ -278,7 +262,9 @@ T Matrix<T, row, col>::det() const {
 
     if (this->getRows() == 1) {
         return (*this)(0,0);
-    } else if (this->getRows() == 2) {
+    }
+    
+    if (this->getRows() == 2) {
         return (((*this)(0,0) * (*this)(1,1))
         - ((*this)(0,1) * (*this)(1,0)));
     }
@@ -458,4 +444,38 @@ MatrixCol<T, row> Matrix<T, row, col>::operator*(const MatrixCol<T, row>& rhs) c
     }
 
     return resMatrix;
+}
+
+template <typename T3, size_t row3, size_t col3>
+Matrix<T3> operator*(double val, const Matrix<T3, row3, col3>& matrix) {
+    Matrix<T3> multiplicationMatrix(matrix.getRows(), matrix.getCols());
+
+    for (size_t curRow = 0; curRow < matrix.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < matrix.getCols(); ++curCol) {
+            multiplicationMatrix(curRow, curCol) = matrix(curRow, curCol) * val;
+        }
+    }
+    return multiplicationMatrix;
+}
+
+template <typename T, size_t row, size_t col>
+Matrix<T, row, col>& Matrix<T, row, col>::operator=(const Matrix<T>& rhs) {
+    if (rhs.getSize() != this->getSize()) {
+        throw "size equal error";
+    }
+
+    this->m_row = rhs.getRows();
+    this->m_col = rhs.getCols();
+
+    this->m_matrix.resize(m_row * m_col, 0);
+
+    size_t index = 0;
+    for (size_t curRow = 0; curRow < rhs.getRows(); ++curRow) {
+        for (size_t curCol = 0; curCol < rhs.getCols(); ++curCol) {
+            this->m_matrix[index] = rhs(curRow, curCol);
+            ++index;
+        }
+    }
+
+    return *this;
 }

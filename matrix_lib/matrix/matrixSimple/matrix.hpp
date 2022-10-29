@@ -1,21 +1,9 @@
 #pragma once // NOLINT
 
+
 #include "matrix_col.hpp"
+
 #define eps2 1e7
-
-class Real {
-    public:
-        explicit Real() : m_number(0.0) {}
-        explicit Real(double number) : m_number(number) {}
-        
-        operator double() const { return m_number; }
-        float toFloat() const { return static_cast<float>(m_number); }
-        int toInt() const { return static_cast<int>(m_number); }
-
-    private:
-        double m_number;
-};
-
 ///////////////////////////////////////Simple matrix////////////////////////////////////////////////  
 template <typename T, size_t row, size_t col>
 class Matrix {
@@ -24,31 +12,7 @@ class Matrix {
         explicit Matrix(const std::initializer_list<T> &list);
         explicit Matrix(size_t _row, size_t _col);
         Matrix(const Matrix& rhs) = default;
-        Matrix<T, row, col>& operator=(const Matrix<T>& rhs) {
-            try {
-                if (rhs.getSize() != this->getSize()) {
-                    throw "size equal error";
-                }
-            } catch (const std::string& e) {
-                std::cout << "Error: " << e << std::endl;
-            }
-
-
-            this->m_row = rhs.getRows();
-            this->m_col = rhs.getCols();
-
-            this->m_matrix.resize(m_row * m_col, 0);
-
-            size_t index = 0;
-            for (size_t curRow = 0; curRow < rhs.getRows(); ++curRow) {
-                for (size_t curCol = 0; curCol < rhs.getCols(); ++curCol) {
-                    this->m_matrix[index] = rhs(curRow, curCol);
-                    ++index;
-                }
-            }
-
-            return *this;
-        }
+        Matrix<T, row, col>& operator=(const Matrix<T>& rhs);
         ~Matrix() = default;
 
         size_t getSize() const {return m_row * m_col;}
@@ -82,19 +46,10 @@ class Matrix {
 
         Matrix<T> operator+(T val) const;
         Matrix<T> operator-(T val) const;
-        // правостороннее
-        Matrix<T> operator*(T val) const;
-        // левостороннее
-        friend Matrix<T> operator*(T val, const Matrix<T, row, col>& matrix) {
-            Matrix<T> multiplicationMatrix(matrix.getRows(), matrix.getCols());
 
-            for (size_t curRow = 0; curRow < matrix.getRows(); ++curRow) {
-                for (size_t curCol = 0; curCol < matrix.getCols(); ++curCol) {
-                    multiplicationMatrix(curRow, curCol) = matrix(curRow, curCol) * val;
-                }
-            }
-            return multiplicationMatrix;
-        }
+        Matrix<T> operator*(T val) const; // правостороннее
+        template <typename T3, size_t row3, size_t col3>
+        friend Matrix<T3> operator*(T3 val, const Matrix<T3, row3, col3>& matrix); // левостороннее
 
         template <typename T1, size_t N, size_t M>
         friend void fillMinor(const Matrix<T1, N, M>& matrix, size_t del_row, size_t del_col, Matrix<double>& new_matrix);
