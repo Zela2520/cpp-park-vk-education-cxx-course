@@ -5,6 +5,6 @@ set -e
 project_dir=$(pwd)
 
 cd build/
-lcov -t "matrix_lib/" -o coverage.info -c -d tests/CMakeFiles/test_matrix.dir/
+lcov -d tests  -t "matrix_lib/matrix" -o coverage.info -c --include "$project_dir/matrix_lib/matrix*"
 genhtml -o report coverage.info
  
