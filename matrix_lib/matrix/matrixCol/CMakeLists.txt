@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.14)
+project(matrix_col)
+
+file(GLOB INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
+
+set(MATRIX_COL ${INCLUDE_DIRS} PARENT_SCOPE)
