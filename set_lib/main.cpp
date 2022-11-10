@@ -18,16 +18,52 @@ struct Node {
 
     void insert(Node<T>*& root, T data); // O(h), где h - глубина дерева
 
-    bool Delete(Node<T>*& root, T data);
-    void DeleteNode(Node<T>*& deletedNode);
+    void DeleteNode(Node<T>*& deletedNode); // O(h), где h - глубина дерева
+    bool Delete(Node<T>*& root, T data); // O(h), где h - глубина дерева
 
     void bfs(Node<T>* root);
+    void dfsInOrder(Node<T>* root);
 
 };
 
 template <typename T>
-void DeleteNode(Node<T>*& deletedNode) {
+void Node<T>::DeleteNode(Node<T>*& deletedNode) {
+    if (!deletedNode->m_left && !deletedNode->m_right) {
+        std::cout << "Branches doesn't exist" << std::endl;
+        delete deletedNode;
+        deletedNode = nullptr;
+    } else {
+        if (!deletedNode->m_left) {
+            std::cout << "Right branch exist" << std::endl;
+            deletedNode->m_parrent->m_right = deletedNode->m_right;
+            delete deletedNode;
+            deletedNode = nullptr;
+        } else if (!deletedNode->m_right) {
+            std::cout << "Left branch exist" << std::endl;
+            deletedNode->m_parrent->m_left = deletedNode->m_left;
+            delete deletedNode;
+            deletedNode = nullptr;
+        } else { // оба поддерева есть
+            std::cout << "Both branches exist" << std::endl;
 
+            Node<T>* min = deletedNode->m_right;
+            while (min->m_left) {
+                min = min->m_left;
+            }
+
+            if (min->m_parrent->m_left == min) {
+                min->m_parrent->m_left = min->m_right;
+            }
+
+            if (min->m_parrent->m_right == min) {
+                min->m_parrent->m_right = min->m_right;
+            }
+
+            deletedNode->m_data = min->m_data;
+            delete min;
+            min = min->m_left = min->m_right = nullptr;
+        }
+    }  
 }
 
 template <typename T>
@@ -36,7 +72,9 @@ bool Node<T>::Delete(Node<T>*& root, T data) {
 
     Node<T>* curNode = find(root, data);
     if (curNode) {
+        // std::cout << "deleted data: " << curNode->m_data << std::endl;
         DeleteNode(curNode);
+        // std::cout << "updated node data: " << curNode->m_data << std::endl;
         return true;
     }
 
@@ -140,15 +178,30 @@ void Node<T>::bfs(Node<T>* root) {
 
     while(!(m_queue.empty())) {
         Node<T>* tmpNode = m_queue.front();
-        std::cout << tmpNode->m_data << std::endl;
+        if (tmpNode != nullptr) {
+            std::cout << "value: " << tmpNode->m_data << std::endl;
+        }
+
         m_queue.pop();
 
         if (tmpNode->m_left != nullptr) {
             m_queue.push(tmpNode->m_left);
+            std::cout << "parrent value: " << tmpNode->m_data << std::endl;
+            std::cout << "left child value: " << tmpNode->m_left->m_data << std::endl;
         }
         if (tmpNode->m_right != nullptr) {
             m_queue.push(tmpNode->m_right);
+            std::cout << "right child value: " << tmpNode->m_right->m_data << std::endl;
         }
+    }
+}
+
+template <typename T>
+void Node<T>::dfsInOrder(Node<T>* root) {
+    if (root) {
+        dfsInOrder(root->m_left);
+        std::cout << "value: " << root->m_data << std::endl;
+        dfsInOrder(root->m_right);
     }
 }
 
@@ -173,17 +226,22 @@ int main() {
     root->insert(root, 14);
     root->insert(root, 16);
     root->insert(root, 18);
+    root->insert(root, 19);
 
-    root->bfs(root);
+    for (int i = 2; i < 20; ++i) {
+        std::cout << i << std::endl; 
+        root->Delete(root, i);
+    }
 
-    Node<int>* findElem = root->find(root, 20);
+    root->dfsInOrder(root);
+
+    Node<int>* findElem = root->find(root, 8);
 
     if (!findElem) {
         std::cout << "Element doesn't exist" << std::endl; 
     } else {
-        std::cout << findElem->m_data << std::endl;
+        std::cout << "findElem data:" << findElem->m_data << std::endl;
     }
-
 
     return 0;
 }
