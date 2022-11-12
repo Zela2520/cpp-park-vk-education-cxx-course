@@ -51,6 +51,10 @@ Node<T>* AvlTree<T>::rotateLeft(Node<T> *&curNode) {
         newRoot->m_parent->m_right = newRoot;
     }
 
+    if (newRoot->m_left->m_right) {
+        newRoot->m_left->m_right->m_parent = newRoot->m_left;
+    }
+
     fixHeight(newRoot->m_left);
     fixHeight(newRoot);
 
@@ -68,6 +72,10 @@ Node<T>* AvlTree<T>::rotateRight(Node<T> * &curNode) {
 
     if (newRoot->m_parent) {
         newRoot->m_parent->m_left = newRoot;
+    }
+
+    if (newRoot->m_right->m_left) {
+        newRoot->m_right->m_left->m_parent = newRoot->m_right;
     }
 
     fixHeight(newRoot->m_right);

@@ -25,9 +25,10 @@ class Node {
     ~Node() = default;
 
     template<class> friend class AvlTree;
-    friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
-        return os << curNode.m_data;
-    }
+    public:
+        friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
+            return os << curNode.m_data;
+        }
 };
 
 template<typename T>
@@ -59,6 +60,9 @@ public:
 
     const_iterator Begin() const;
     const_iterator End() const;
+    // search functions 
+    Node<T>* find(const T& data);
+    Node<T>* findLowerBound(const T& data); // call find. addresed "next" field in returned Node in find method.
 
     void BFS();
     void dfsInOrder(Node<T>* curNode);
@@ -79,9 +83,31 @@ private:
     short getBalance(Node<T> *curNode);
     size_t getHeight(Node<T> *&curNode);
 
-    bool innerDelete(const T &data, Node<T> *&curNode);
     bool innerAdd(Node<T> *newNode, Node<T> *&curNode);
+    bool innerDelete(const T &data);
+    void DeleteNode(Node<T>*& deletedNode);
 };
+
+template <typename T>
+Node<T>* AvlTree<T>::find(const T& data) {
+    if (!m_root) { return nullptr; }
+
+    Node<T>* curNode = m_root;
+
+    while(curNode) {
+        if (curNode->m_data == data) {
+            return curNode;
+        }
+
+        if (curNode->m_data > data) {
+            curNode = curNode->m_left;
+        } else {
+            curNode = curNode->m_right;
+        }
+    }
+
+    return nullptr;
+}
 
 #include "srcConstructor.hpp"
 #include "srcAccess.hpp"
