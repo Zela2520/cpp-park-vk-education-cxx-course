@@ -12,13 +12,17 @@ int main() {
         tree.Add(i);
     }
 
-    // for (int i = 1; i < 9; ++i) {
-    //     tree.Delete(i);
-    // }
+    for (int i = 1; i < 9; ++i) {
+        tree.Delete(i);
+    }
 
-    tree.Delete(2);
-    tree.Delete(8);
-    tree.Delete(6);
+    // tree.Delete(2);
+    // tree.Delete(8);
+    // tree.Delete(6);
+
+    // tree.Delete(1);
+    // tree.Delete(2);
+    // tree.Delete(3);
 
     tree.BFS();
     // tree.dfsInOrder(tree.getRoot());

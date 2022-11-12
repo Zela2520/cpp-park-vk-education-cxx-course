@@ -97,18 +97,17 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
             }
         }
         delete deletedNode;
-        // deletedNode = nullptr;
-        // if (deletedNode->m_parent) {
-        //     auto* tmp = deletedNode->m_parent;
-        //         while (tmp) {
-        //         tmp = doBalance(tmp);
-        //         auto* child = tmp;
-        //         tmp = tmp->m_parent;
-        //         if (!tmp) {
-        //             m_root = child;
-        //         }
-        //     }
-        // }
+        if (deletedNode->m_parent) {
+            auto* tmp = deletedNode->m_parent;
+                while (tmp) {
+                tmp = doBalance(tmp);
+                auto* child = tmp;
+                tmp = tmp->m_parent;
+                if (!tmp) {
+                    m_root = child;
+                }
+            }
+        }
     } else {
         if (!deletedNode->m_left) { // случай когда левой ветви нет
 
@@ -121,16 +120,17 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                 }
             }
             delete deletedNode;
-
-            // auto* tmp = deletedNode->m_parent;
-            // while (tmp) {
-            //     tmp = doBalance(tmp);
-            //     auto* child = tmp;
-            //     tmp = tmp->m_parent;
-            //     if (!tmp) {
-            //         m_root = child;
-            //     }
-            // }
+            if (deletedNode->m_parent) {
+                auto* tmp = deletedNode->m_parent;
+                while (tmp) {
+                    tmp = doBalance(tmp);
+                    auto* child = tmp;
+                    tmp = tmp->m_parent;
+                    if (!tmp) {
+                        m_root = child;
+                    }
+                }
+            }
         } else if (!deletedNode->m_right) { // случай когда правой ветви нет
 
             deletedNode->m_left->m_parent = deletedNode->m_parent;
@@ -142,17 +142,17 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                 }
             }
             delete deletedNode;
-
-
-            // auto* tmp = deletedNode->m_parent;
-            // while (tmp) {
-            //     tmp = doBalance(tmp);
-            //     auto* child = tmp;
-            //     tmp = tmp->m_parent;
-            //     if (!tmp) {
-            //         m_root = child;
-            //     }
-            // }
+            if (deletedNode->m_parent) {
+                auto* tmp = deletedNode->m_parent;
+                while (tmp) {
+                    tmp = doBalance(tmp);
+                    auto* child = tmp;
+                    tmp = tmp->m_parent;
+                    if (!tmp) {
+                        m_root = child;
+                    }
+                }
+            }
         } else { // обе ветки есть
             std::cout << "Both branches exist" << std::endl;
 
@@ -184,6 +184,17 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
 
             min->m_right = nullptr;
             delete min;
+            if (min->m_parent) {
+                auto* tmp = min->m_parent;
+                while (tmp) {
+                    tmp = doBalance(tmp);
+                    auto* child = tmp;
+                    tmp = tmp->m_parent;
+                    if (!tmp) {
+                        m_root = child;
+                    }
+                }
+            }
         }
     }
 }
