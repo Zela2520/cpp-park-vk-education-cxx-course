@@ -12,12 +12,16 @@ int main() {
         tree.Add(i);
     }
 
-    for (int i = 3; i < 8; ++i) {
-        tree.Delete(i);
-    }
+    // for (int i = 1; i < 9; ++i) {
+    //     tree.Delete(i);
+    // }
+
+    tree.Delete(2);
+    tree.Delete(8);
+    tree.Delete(6);
 
     tree.BFS();
-    tree.dfsInOrder(tree.getRoot());
+    // tree.dfsInOrder(tree.getRoot());
 
     std::cout << "\n";
 

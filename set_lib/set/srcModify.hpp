@@ -88,9 +88,16 @@ bool AvlTree<T>::innerDelete(const T &data) {
 template<class T>
 void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
     if (!deletedNode->m_left && !deletedNode->m_right) { // случай для листового узла
-        std::cout << "Branches doesn't exist. Deleted node value: " << deletedNode->m_data << std::endl;
+        std::cout << "Branches doesn't exist." << std::endl;
+        if (deletedNode->m_parent) {
+            if (deletedNode->m_parent->m_left == deletedNode) {
+                deletedNode->m_parent->m_left = nullptr;
+            } else if (deletedNode->m_parent->m_right == deletedNode) {
+                deletedNode->m_parent->m_right = nullptr;
+            }
+        }
         delete deletedNode;
-        deletedNode = nullptr;
+        // deletedNode = nullptr;
         // if (deletedNode->m_parent) {
         //     auto* tmp = deletedNode->m_parent;
         //         while (tmp) {
@@ -105,14 +112,16 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
     } else {
         if (!deletedNode->m_left) { // случай когда левой ветви нет
 
-            std::cout << "Only right branch exist" << std::endl;
-
-            Node<T>* right = deletedNode->m_right;
-            if (right->m_parent) {
-                right->m_parent = deletedNode->m_parent;
+            deletedNode->m_right->m_parent = deletedNode->m_parent;
+            if (deletedNode->m_parent) {
+                if (deletedNode == deletedNode->m_parent->m_right) {
+                    deletedNode->m_parent->m_right = deletedNode->m_right;
+                } else if (deletedNode == deletedNode->m_parent->m_left) {
+                    deletedNode->m_parent->m_left = deletedNode->m_right;
+                }
             }
             delete deletedNode;
-            deletedNode = right;
+
             // auto* tmp = deletedNode->m_parent;
             // while (tmp) {
             //     tmp = doBalance(tmp);
@@ -123,14 +132,18 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
             //     }
             // }
         } else if (!deletedNode->m_right) { // случай когда правой ветви нет
-            std::cout << "Only left branch exist" << std::endl;
 
-            Node<T>* left = deletedNode->m_left;
-            if (left->m_parent) {
-                left->m_parent = deletedNode->m_parent;
+            deletedNode->m_left->m_parent = deletedNode->m_parent;
+            if (deletedNode->m_parent) {
+                if (deletedNode == deletedNode->m_parent->m_right) {
+                    deletedNode->m_parent->m_right = deletedNode->m_left;
+                } else if (deletedNode == deletedNode->m_parent->m_left) {
+                    deletedNode->m_parent->m_left = deletedNode->m_left;
+                }
             }
             delete deletedNode;
-            deletedNode = left;
+
+
             // auto* tmp = deletedNode->m_parent;
             // while (tmp) {
             //     tmp = doBalance(tmp);
@@ -153,27 +166,24 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
 
             if (minParrent->m_left == min) {
                 minParrent->m_left = min->m_right;
-                min->m_parent->m_left = min->m_right;
+                if (min->m_right) {
+                    min->m_right->m_parent = minParrent;
+                }
+                min->m_parent = min->m_left = min->m_right = nullptr;
             }
 
             if (minParrent->m_right == min) {
-                std::cout << "deleted data: " << minParrent->m_data << std::endl;
                 minParrent->m_right = min->m_right;
-                min->m_parent->m_right = min->m_right;
+                if (min->m_right) {
+                    min->m_right->m_parent = minParrent;
+                }
+                min->m_parent = min->m_left = min->m_right = nullptr;
             }
 
             deletedNode->m_data = min->m_data;
+
+            min->m_right = nullptr;
             delete min;
-            min = nullptr;
-            // auto* tmp = min->m_parent;
-            // while (tmp) {
-            //     tmp = doBalance(tmp);
-            //     auto* child = tmp;
-            //     tmp = tmp->m_parent;
-            //     if (!tmp) {
-            //         m_root = child;
-            //     }
-            // }
         }
     }
 }
