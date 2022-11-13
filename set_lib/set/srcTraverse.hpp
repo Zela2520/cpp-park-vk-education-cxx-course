@@ -31,9 +31,5 @@ void AvlTree<T>::BFS() {
 
 template<typename T>
 void AvlTree<T>::dfsInOrder(Node<T>* curNode) {
-    if (curNode) {
-        dfsInOrder(curNode->m_left);
-        std::cout << "value: " << curNode->m_data << std::endl;
-        dfsInOrder(curNode->m_right);
-    }
+    destroyTree(this->m_root);
 }

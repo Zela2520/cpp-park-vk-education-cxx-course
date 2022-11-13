@@ -40,7 +40,7 @@ public:
 
     AvlTree() : m_root(nullptr), m_size(0) {};
     AvlTree(const std::initializer_list<T> &list);
-    ~AvlTree() = default;
+    ~AvlTree();
 
     void Add(const T &data);
     void Delete(const T &data);
@@ -86,6 +86,8 @@ private:
     bool innerAdd(Node<T> *newNode, Node<T> *&curNode);
     bool innerDelete(const T &data);
     void DeleteNode(Node<T>*& deletedNode);
+
+    void destroyTree(Node<T>* curNode);
 };
 
 template <typename T>

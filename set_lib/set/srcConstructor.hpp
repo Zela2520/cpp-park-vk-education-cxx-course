@@ -6,3 +6,8 @@ AvlTree<T>::AvlTree(const std::initializer_list<T> &list) : AvlTree() {
         Add(elem);
     }
 }
+
+template<typename T>
+AvlTree<T>::~AvlTree() {
+    destroyTree(m_root);
+}
