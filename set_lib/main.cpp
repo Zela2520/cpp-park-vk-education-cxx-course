@@ -12,9 +12,11 @@ int main() {
         tree.Add(i);
     }
 
-    for (int i = 1; i < 9; ++i) {
+    for (int i = 1; i < 10; ++i) {
         tree.Delete(i);
     }
+
+//    tree.Delete(9);
 
     // tree.Delete(2);
     // tree.Delete(8);

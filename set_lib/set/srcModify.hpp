@@ -87,6 +87,24 @@ bool AvlTree<T>::innerDelete(const T &data) {
 
 template<class T>
 void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
+    if (deletedNode == m_root) {
+        if (!m_root->m_right && !m_root->m_left) {
+            delete m_root;
+            m_root = nullptr;
+        } else {
+            if (!m_root->m_left) {
+                m_root = m_root->m_right;
+                delete m_root->m_parent;
+                m_root->m_parent = nullptr;
+            }
+            else if (!m_root->m_right) {
+                m_root = m_root->m_left;
+                delete m_root->m_parent;
+                m_root->m_parent = nullptr;
+            }
+        }
+        return;
+    }
     if (!deletedNode->m_left && !deletedNode->m_right) { // случай для листового узла
         std::cout << "Branches doesn't exist." << std::endl;
         if (deletedNode->m_parent) {

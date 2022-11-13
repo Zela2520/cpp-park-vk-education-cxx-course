@@ -8,22 +8,24 @@ void AvlTree<T>::BFS() {
     while(!m_queue.empty()) {
         Node<T>* curNode = m_queue.front();
         m_queue.pop();
+        if (curNode) {
+            std::cout << "data: " << curNode->m_data;
+            std::cout << "   height: " << curNode->m_height;
+            if (curNode->m_parent) {
+                std::cout << "   parent: " << curNode->m_parent->m_data;
+            }
 
-        std::cout << "data: " << curNode->m_data;
-        std::cout << "   height: " << curNode->m_height;
-        if (curNode->m_parent) {
-            std::cout << "   parent: " << curNode->m_parent->m_data;
+            std::cout << std::endl;
+
+            if (curNode->m_left) {
+                m_queue.push(curNode->m_left);
+            }
+
+            if (curNode->m_right) {
+                m_queue.push(curNode->m_right);
+            }
         }
 
-        std::cout << std::endl;
-
-        if (curNode->m_left) {
-            m_queue.push(curNode->m_left);
-        }
-
-        if (curNode->m_right) {
-            m_queue.push(curNode->m_right);
-        }
     }
 }
 
