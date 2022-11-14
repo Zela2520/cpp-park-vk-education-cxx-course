@@ -67,7 +67,8 @@ public:
     void BFS();
     void dfsInOrder(Node<T>* curNode);
 
-    Node<T>* getRoot() {return m_root;}
+    Node<T>* getRoot() const {return m_root;}
+    T getRootData() const {return m_root->m_data;}
 
 private:
     Node<T>* m_root = nullptr;

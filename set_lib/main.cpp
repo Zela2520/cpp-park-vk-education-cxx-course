@@ -8,13 +8,21 @@ int main() {
 
     AvlTree<int> tree;
 
-    for(int i = 1; i < 10; ++i) {
+
+    for(int i = 9; i > 0; --i) {
         tree.Add(i);
     }
 
-    for (int i = 1; i < 8; ++i) {
+    // for (int i = 1; i < 10; ++i) {
+    //     tree.Delete(i);
+    // }
+
+    for (int i = 1; i < 10; ++i) {
+        std::cout << "elem broken: " << i << std::endl;
         tree.Delete(i);
     }
+
+    // tree.Delete(4);
 
 //    tree.Delete(9);
 
@@ -35,8 +43,8 @@ int main() {
 
     // Node<int>* searchElem = tree.find(8);
     // std::cout << "search elem value is: " << *searchElem << std::endl;
-    Node<int>* searchElem2 = tree.find(10);
-    assert(searchElem2 == nullptr);
+    // Node<int>* searchElem2 = tree.find(10);
+    // assert(searchElem2 == nullptr);
 
 
 

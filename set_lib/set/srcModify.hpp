@@ -87,8 +87,8 @@ bool AvlTree<T>::innerDelete(const T &data) {
 
 template<class T>
 void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
-    if (deletedNode == m_root) {
-        if (!m_root->m_right && !m_root->m_left) {
+        if (deletedNode == m_root && (!deletedNode->m_right || !deletedNode->m_left)) {
+            if (!m_root->m_right && !m_root->m_left) {
             delete m_root;
             m_root = nullptr;
         } else {
@@ -114,12 +114,11 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                 deletedNode->m_parent->m_right = nullptr;
             }
         }
-        
         if (deletedNode->m_parent) {
-            Node<T>* tmp = deletedNode->m_parent;
-                while (tmp) {
+            auto* tmp = deletedNode->m_parent;
+            while (tmp) {
                 tmp = doBalance(tmp);
-                Node<T>* child = tmp;
+                auto* child = tmp;
                 tmp = tmp->m_parent;
                 if (!tmp) {
                     m_root = child;
@@ -127,9 +126,9 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
             }
         }
         delete deletedNode;
+        return;
     } else {
         if (!deletedNode->m_left) { // случай когда левой ветви нет
-
             deletedNode->m_right->m_parent = deletedNode->m_parent;
             if (deletedNode->m_parent) {
                 if (deletedNode == deletedNode->m_parent->m_right) {
@@ -138,12 +137,11 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                     deletedNode->m_parent->m_left = deletedNode->m_right;
                 }
             }
-            
             if (deletedNode->m_parent) {
-                Node<T>* tmp = deletedNode->m_parent;
+                auto* tmp = deletedNode->m_parent;
                 while (tmp) {
                     tmp = doBalance(tmp);
-                    Node<T>* child = tmp;
+                    auto* child = tmp;
                     tmp = tmp->m_parent;
                     if (!tmp) {
                         m_root = child;
@@ -151,9 +149,11 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                 }
             }
             delete deletedNode;
+            return;
         } else if (!deletedNode->m_right) { // случай когда правой ветви нет
 
             deletedNode->m_left->m_parent = deletedNode->m_parent;
+
             if (deletedNode->m_parent) {
                 if (deletedNode == deletedNode->m_parent->m_right) {
                     deletedNode->m_parent->m_right = deletedNode->m_left;
@@ -161,12 +161,12 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                     deletedNode->m_parent->m_left = deletedNode->m_left;
                 }
             }
-            
+
             if (deletedNode->m_parent) {
-                Node<T>* tmp = deletedNode->m_parent;
+                auto* tmp = deletedNode->m_parent;
                 while (tmp) {
                     tmp = doBalance(tmp);
-                    Node<T>* child = tmp;
+                    auto* child = tmp;
                     tmp = tmp->m_parent;
                     if (!tmp) {
                         m_root = child;
@@ -174,6 +174,7 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                 }
             }
             delete deletedNode;
+            return;
         } else { // обе ветки есть
             std::cout << "Both branches exist" << std::endl;
 
@@ -202,13 +203,12 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
             }
 
             deletedNode->m_data = min->m_data;
-
             min->m_right = nullptr;
             if (min->m_parent) {
-                Node<T>* tmp = min->m_parent;
+                auto* tmp = deletedNode->m_parent;
                 while (tmp) {
                     tmp = doBalance(tmp);
-                    Node<T>* child = tmp;
+                    auto* child = tmp;
                     tmp = tmp->m_parent;
                     if (!tmp) {
                         m_root = child;
@@ -216,6 +216,7 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
                 }
             }
             delete min;
+            return;
         }
     }
 }
