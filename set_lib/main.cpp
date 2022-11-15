@@ -9,15 +9,15 @@ int main() {
     AvlTree<int> tree;
 
 
-    for(int i = 9; i > 0; --i) {
+    for(int i = 100; i > 0; --i) {
         tree.Add(i);
     }
 
-    // for (int i = 1; i < 10; ++i) {
+    // for (int i = 1; i < 100; ++i) {
     //     tree.Delete(i);
     // }
 
-    for (int i = 1; i < 10; ++i) {
+    for (int i = 1; i < 101; ++i) {
         std::cout << "elem broken: " << i << std::endl;
         tree.Delete(i);
     }

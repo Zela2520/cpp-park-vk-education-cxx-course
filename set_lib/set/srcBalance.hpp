@@ -42,20 +42,24 @@ template<typename T>
 Node<T>* AvlTree<T>::rotateLeft(Node<T> *&curNode) {
     Node<T>* newRoot = curNode->m_right;
     curNode->m_right = newRoot->m_left;
+    if (newRoot->m_left) {
+        newRoot->m_left->m_parent = curNode;
+    }
+
     newRoot->m_left = curNode;
+    newRoot->m_parent = curNode->m_parent;
 
-    newRoot->m_parent = newRoot->m_left->m_parent;
-    newRoot->m_left->m_parent = newRoot;
-
-    if (newRoot->m_parent) {
-        newRoot->m_parent->m_right = newRoot;
+    if (curNode == m_root) {
+        newRoot->m_parent = nullptr;
+        m_root = newRoot;
+    } else if (newRoot->m_data < curNode->m_parent->m_data) {
+        curNode->m_parent->m_left = newRoot;
+    } else {
+        curNode->m_parent->m_right = newRoot;
     }
 
-    if (newRoot->m_left->m_right) {
-        newRoot->m_left->m_right->m_parent = newRoot->m_left;
-    }
-
-    fixHeight(newRoot->m_left);
+    curNode->m_parent = newRoot;
+    fixHeight(curNode);
     fixHeight(newRoot);
 
     return newRoot;
@@ -65,21 +69,25 @@ template<typename T>
 Node<T>* AvlTree<T>::rotateRight(Node<T> * &curNode) {
     Node<T>* newRoot = curNode->m_left;
     curNode->m_left = newRoot->m_right;
+    if (newRoot->m_right) {
+        newRoot->m_right->m_parent = curNode;
+    }
+
     newRoot->m_right = curNode;
+    newRoot->m_parent = curNode->m_parent;
 
-    newRoot->m_parent = newRoot->m_right->m_parent;
-    newRoot->m_right->m_parent = newRoot;
-
-    if (newRoot->m_parent) {
-        newRoot->m_parent->m_left = newRoot;
+    if (curNode == m_root) {
+        newRoot->m_parent = nullptr;
+        m_root = newRoot;
+    } else if (newRoot->m_data < curNode->m_parent->m_data) {
+        curNode->m_parent->m_left = newRoot;
+    } else {
+        curNode->m_parent->m_right = newRoot;
     }
 
-    if (newRoot->m_right->m_left) {
-        newRoot->m_right->m_left->m_parent = newRoot->m_right;
-    }
-
-    fixHeight(newRoot->m_right);
+    curNode->m_parent = newRoot;
+    fixHeight(curNode);
     fixHeight(newRoot);
-    
+
     return newRoot;
 }

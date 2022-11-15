@@ -29,6 +29,7 @@ class Node {
         friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
             return os << curNode.m_data;
         }
+    T getData() const {return m_data;}
 };
 
 template<typename T>
@@ -62,7 +63,7 @@ public:
     const_iterator End() const;
     // search functions 
     Node<T>* find(const T& data);
-    Node<T>* findLowerBound(const T& data); // call find. addresed "next" field in returned Node in find method.
+    Node<T>* findLowerBound(const T& data);
 
     void BFS();
     void dfsInOrder(Node<T>* curNode);
@@ -110,6 +111,11 @@ Node<T>* AvlTree<T>::find(const T& data) {
     }
 
     return nullptr;
+}
+
+template <typename T>
+Node<T>* AvlTree<T>::findLowerBound(const T& data) {
+    return find(data)->getNext();
 }
 
 #include "srcConstructor.hpp"

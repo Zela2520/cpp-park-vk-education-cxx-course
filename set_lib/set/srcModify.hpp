@@ -203,7 +203,7 @@ void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
             }
 
             deletedNode->m_data = min->m_data;
-            min->m_right = nullptr;
+            // min->m_right = nullptr;
             if (min->m_parent) {
                 auto* tmp = deletedNode->m_parent;
                 while (tmp) {
