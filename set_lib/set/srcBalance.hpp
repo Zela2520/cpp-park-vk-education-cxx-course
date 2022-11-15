@@ -1,93 +1,119 @@
 #pragma once // pragma once
 
-template<class T>
-size_t AvlTree<T>::getHeight(Node<T>* &curNode) {
-    return curNode ? curNode->m_height : 0;
-}
-
-template<class T>
-void AvlTree<T>::fixHeight(Node<T>* &curNode) {
-    curNode->m_height = std::max(getHeight(curNode->m_left), getHeight(curNode->m_right)) + 1;
-}
-
-template<class T>
-short AvlTree<T>::getBalance(Node<T>* curNode) {
-    return getHeight(curNode->m_right) - getHeight(curNode->m_left);
-}
-
-template<class T>
-Node<T>* AvlTree<T>::doBalance(Node<T>* &curNode) {
-    fixHeight(curNode);
-    
-    switch (getBalance(curNode)) {
-        case 2: {
-            if (getBalance(curNode->m_right) < 0) {
-                curNode->m_right = rotateRight(curNode->m_right);
-            }
-            return rotateLeft(curNode);
-        }
-        case -2: {
-            if (getBalance(curNode->m_left) > 0) {
-                curNode->m_left = rotateLeft(curNode->m_left);
-            }
-            return rotateRight(curNode);
-        }
-        default: {
-            return curNode;
-        }
-    }
-}
-
-template<typename T>
-Node<T>* AvlTree<T>::rotateLeft(Node<T> *&curNode) {
-    Node<T>* newRoot = curNode->m_right;
-    curNode->m_right = newRoot->m_left;
-    if (newRoot->m_left) {
-        newRoot->m_left->m_parent = curNode;
+template<typename T, class IsLess>
+void Tree<T, IsLess>::fixHeight(Node<T>* begin) {
+    if (!begin) {
+        return;
     }
 
-    newRoot->m_left = curNode;
-    newRoot->m_parent = curNode->m_parent;
+    int hl = Height(begin->left_child);
+    int hr = Height(begin->right_child);
 
-    if (curNode == m_root) {
-        newRoot->m_parent = nullptr;
-        m_root = newRoot;
-    } else if (newRoot->m_data < curNode->m_parent->m_data) {
-        curNode->m_parent->m_left = newRoot;
+    begin->height = ((hl > hr) ? hl : hr) + 1;
+
+    fixHeight(begin->parent);
+}
+
+template<typename T, class IsLess>
+void Tree<T, IsLess>::fixSize(Node<T>* begin) {
+    if (!begin) {
+        return;
+    }
+
+    begin->size = Size(begin->left_child) + Size(begin->right_child) + 1;
+
+    fixSize(begin->parent);
+}
+
+template<typename T, class IsLess>
+Node<T>* Tree<T, IsLess>::rotateRight(Node<T>* begin) {
+    Node<T>* tmp_left = begin->left_child;
+    begin->left_child = tmp_left->right_child;
+    if (tmp_left->right_child) {
+        tmp_left->right_child->parent = begin;
+    }
+
+    tmp_left->right_child = begin;
+
+    tmp_left->parent = begin->parent;
+
+    if (begin == Root()) {
+        tmp_left->parent = nullptr;
+        root = tmp_left;
+    } else if (isLess(tmp_left->value, begin->parent->value)) {
+        begin->parent->left_child = tmp_left;
     } else {
-        curNode->m_parent->m_right = newRoot;
+        begin->parent->right_child = tmp_left;
     }
 
-    curNode->m_parent = newRoot;
-    fixHeight(curNode);
-    fixHeight(newRoot);
+    begin->parent = tmp_left;
 
-    return newRoot;
+    fixHeight(begin);
+    fixHeight(tmp_left);
+
+    fixSize(begin);
+    fixSize(tmp_left);
+
+    return tmp_left;
 }
 
-template<typename T>
-Node<T>* AvlTree<T>::rotateRight(Node<T> * &curNode) {
-    Node<T>* newRoot = curNode->m_left;
-    curNode->m_left = newRoot->m_right;
-    if (newRoot->m_right) {
-        newRoot->m_right->m_parent = curNode;
+template<typename T, class IsLess>
+Node<T>* Tree<T, IsLess>::rotateLeft(Node<T>* begin) {
+    Node<T>* tmp_right = begin->right_child;
+    begin->right_child = tmp_right->left_child;
+    if (tmp_right->left_child) {
+        tmp_right->left_child->parent = begin;
     }
 
-    newRoot->m_right = curNode;
-    newRoot->m_parent = curNode->m_parent;
+    tmp_right->left_child = begin;
 
-    if (curNode == m_root) {
-        newRoot->m_parent = nullptr;
-        m_root = newRoot;
-    } else if (newRoot->m_data < curNode->m_parent->m_data) {
-        curNode->m_parent->m_left = newRoot;
+    tmp_right->parent = begin->parent;
+
+    if (begin == Root()) {
+        tmp_right->parent = nullptr;
+        root = tmp_right;
+    } else if (isLess(tmp_right->value, begin->parent->value)) {
+        begin->parent->left_child = tmp_right;
     } else {
-        curNode->m_parent->m_right = newRoot;
+        begin->parent->right_child = tmp_right;
     }
 
-    curNode->m_parent = newRoot;
-    fixHeight(curNode);
-    fixHeight(newRoot);
+    begin->parent = tmp_right;
 
-    return newRoot;
+    fixHeight(begin);
+    fixHeight(tmp_right);
+
+    fixSize(begin);
+    fixSize(tmp_right);
+
+    return tmp_right;
+}
+
+template<typename T, class IsLess>
+void Tree<T, IsLess>::Balance(Node<T>* begin) {
+    if (!begin) {
+        return;
+    }
+
+    fixHeight(begin);
+    fixSize(begin);
+    if (bFactor(begin) == 2) {
+        if (bFactor(begin->right_child) < 0) {
+            rotateRight(begin->right_child);
+        }
+        rotateLeft(begin);
+        return;
+    }
+
+    if (bFactor(begin) == -2) {
+        if (bFactor(begin->left_child) > 0 ) {
+            rotateLeft(begin->left_child);
+            rotateRight(begin);
+        } else {
+            rotateRight(begin);
+        }
+        return;
+    }
+
+    Balance(begin->parent);
 }

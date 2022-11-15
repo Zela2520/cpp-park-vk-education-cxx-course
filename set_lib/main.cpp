@@ -1,52 +1,58 @@
 #include <iostream>
-#include <cassert>
-#include <queue>
+
 #include "set.hpp"
 
 
 int main() {
+//    auto tree = std::make_unique<Tree<int>>();
+//    Tree<int>* tree = new Tree<int>{9, 2, 3, 7, 1, 8, 5, 4, 6};
+//    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
+    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2, 91, 21, 32, 12, 77, 44, 10, 21, 12, 55, 95, 11};
 
-    AvlTree<int> tree;
+//    for (int i = 1; i < 10; ++i) {
+//        tree->Add(i);
+//    }
 
+//    tree->bfs();
 
-    for(int i = 100; i > 0; --i) {
-        tree.Add(i);
+//
+    for (auto it = tree->rbegin(); it != tree->rend(); --it) {
+        std::cout << "current element value: " <<  it.m_pointer->value << std::endl;
+//        if (it.m_pointer->next) {
+//            std::cout << "next element value: " << it.m_pointer->next->value << std::endl;
+//        }
+//        if (it.m_pointer->prev) {
+//            std::cout << "prev element value: " << it.m_pointer->prev->value << std::endl;
+//        }
     }
+//    for (int i = 1; i < 101; ++i) {
+//        myTree->Add(i);
+//    }
 
-    // for (int i = 1; i < 100; ++i) {
-    //     tree.Delete(i);
-    // }
+//    for (int i = 110; i > 1; --i) {
+//        myTree->Erase(i);
+//    }
 
-    for (int i = 1; i < 101; ++i) {
-        std::cout << "elem broken: " << i << std::endl;
-        tree.Delete(i);
-    }
+//    myTree->Add(2);
+//    myTree->Add(1);
+//    myTree->Add(8);
+//    myTree->Add(4);
+//    myTree->Add(3);
+//    myTree->Add(6);
+//    myTree->Add(6);
+//    if (myTree->Has(1)) {
+//        std::cout << "I' m grut" << std::endl;
+//    }
 
-    // tree.Delete(4);
-
-//    tree.Delete(9);
-
-    // tree.Delete(2);
-    // tree.Delete(8);
-    // tree.Delete(6);
-
-    // tree.Delete(1);
-    // tree.Delete(2);
-    // tree.Delete(3);
-
-    tree.BFS();
-    // tree.dfsInOrder(tree.getRoot());
-
-    std::cout << "\n";
-
-    std::cout << "set size: " << tree.Size() << std::endl << std::endl;
-
-    // Node<int>* searchElem = tree.find(8);
-    // std::cout << "search elem value is: " << *searchElem << std::endl;
-    // Node<int>* searchElem2 = tree.find(10);
-    // assert(searchElem2 == nullptr);
+//    if (myTree->isEmpty()) {
+//        std::cout << "set size: " << myTree->Size() << std::endl;
+//    }
+//
+//    std::cout << "set size: " << myTree->Size() << std::endl;
+//    myTree->bfs();
 
 
 
     return 0;
 }
+

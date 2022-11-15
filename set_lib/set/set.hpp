@@ -1,125 +1,106 @@
 #pragma once  // pragme once
 
-#include <memory>
-#include <queue>
 #include <iostream>
+#include <cassert>
+#include <stack>
+#include <queue>
+#include <memory>
+
 
 #include "iterator.hpp"
 
+template<class T, class IsLess> class Tree;
 
-template<class T> class AvlTree;
+template<typename T1>
+struct Node {
+    Node<T1>* parent;
+    Node<T1>* left_child;
+    Node<T1>* right_child;
+    Node<T1>* next;
+    Node<T1>* prev;
 
-template <typename T>
-class Node {
-    T m_data;
-    Node* m_left;
-    Node* m_right;
-    Node* m_parent;
-    size_t m_height;
+    int height;
+    size_t size;
+    T1 value;
 
-    explicit Node(const T &data, Node *parent = nullptr) : m_data{data}, m_left{nullptr}, m_right{nullptr},
-                                                            m_parent{parent}, m_height{1} {
+    Node() : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1) {}
+    Node(T1 _value) : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1), value(_value) {}
 
-    };
-    Node(const Node &other) : Node (other.m_data) {};
-    ~Node() = default;
+    friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
+        return os << curNode.value;
+    }
 
-    template<class> friend class AvlTree;
-    public:
-        friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
-            return os << curNode.m_data;
-        }
-    T getData() const {return m_data;}
+    template<class> friend class AvlTreeIterator;
 };
 
-template<typename T>
-class AvlTree {
+
+template<typename T, class IsLess>
+class Tree {
+    Node<T>* root;
+    IsLess isLess;
+
+    int bFactor(Node<T>* begin) {return Height(begin->right_child) - Height(begin->left_child);}
+    Node<T>* rotateRight(Node<T>* begin);
+    Node<T>* rotateLeft(Node<T>* begin);
+    void Balance(Node<T>* begin);
+    void fixHeight(Node<T>* begin);
+    void fixSize(Node<T>* begin);
+
+    int Height(Node<T>* node) {return node ? node->height : 0;}
+    size_t Size(Node<T>* node) {return node ? node->size : 0;}
+
+
+    Node<T>* popMin(Node<T>* begin);
+    Node<T>* findMin(Node<T>* targetBranch);
+    Node<T>* findMax(Node<T>* targetBranch);
 
 public:
     typedef AvlTreeIterator<Node<T>> iterator;
     typedef AvlTreeIterator<const Node<T>> const_iterator;
 
-    AvlTree() : m_root(nullptr), m_size(0) {};
-    AvlTree(const std::initializer_list<T> &list);
-    ~AvlTree();
+    Tree(const IsLess& is_less = IsLessDefault<T>());
+    Tree(const T&) = delete;
+    Tree(const std::initializer_list<T> &list);
+    Tree& operator=(const Tree &other) = delete;
+    ~Tree();
 
-    void Add(const T &data);
-    void Delete(const T &data);
+    iterator begin();
+    iterator end();
+
+    iterator rbegin();
+    iterator rend();
+
+    const_iterator begin() const;
+    const_iterator end() const;
+
+    const_iterator rbegin() const;
+    const_iterator rend() const;
+
+    void Add(const T& elem);
+    void Erase(const T& elem);
     bool Has(const T &data) const;
 
+    void Add(const Node<T> &curNode) { Add(curNode.value); }
+    void Erase(const Node<T> &curNode) { Erase(curNode.value); }
+    void Has(const Node<T> &curNode) { Has(curNode.value); }
 
-    void Add(const Node<T> &curNode) { Add(curNode.m_data); }
-    void Delete(const Node<T> &curNode) { Delete(curNode.m_data); }
-    void Has(const Node<T> &curNode) { Has(curNode.m_data); }
+    Node<T>* Root() const {return root;}
+    bool isEmpty() const {return root == nullptr;}
+    size_t Size() {if (isEmpty()) {return 0;} return root->size;}
 
+    // search functions
+    Node<T>* Find(const T& elem) const; // +
+    Node<T>* findLowerBound(const T& data) const; // +
+    Node<T>* getRoot() {return root;} // +
+    T getRootData() const {return root->value;} // +
 
-    size_t Size() const { return m_size; }
-    bool Empty() const { return m_size == 0; }
-
-    iterator Begin();
-    iterator End();
-
-    const_iterator Begin() const;
-    const_iterator End() const;
-    // search functions 
-    Node<T>* find(const T& data);
-    Node<T>* findLowerBound(const T& data);
-
-    void BFS();
-    void dfsInOrder(Node<T>* curNode);
-
-    Node<T>* getRoot() const {return m_root;}
-    T getRootData() const {return m_root->m_data;}
-
-private:
-    Node<T>* m_root = nullptr;
-    size_t m_size;
-
-    Node<T> *findMin(Node<T> *curNode);
-
-    Node<T> *rotateRight(Node<T> *&curNode);
-    Node<T> *rotateLeft(Node<T> *&curNode);
-
-    Node<T> *doBalance(Node<T> *&curNode);
-    void fixHeight(Node<T> *&curNode);
-    short getBalance(Node<T> *curNode);
-    size_t getHeight(Node<T> *&curNode);
-
-    bool innerAdd(Node<T> *newNode, Node<T> *&curNode);
-    bool innerDelete(const T &data);
-    void DeleteNode(Node<T>*& deletedNode);
-
-    void destroyTree(Node<T>* curNode);
+    template<class Action = ActionDefault<T>>
+    void postOrderTree(Node<T>* begin, const Action& act);
+    void bfs();
 };
 
-template <typename T>
-Node<T>* AvlTree<T>::find(const T& data) {
-    if (!m_root) { return nullptr; }
-
-    Node<T>* curNode = m_root;
-
-    while(curNode) {
-        if (curNode->m_data == data) {
-            return curNode;
-        }
-
-        if (curNode->m_data > data) {
-            curNode = curNode->m_left;
-        } else {
-            curNode = curNode->m_right;
-        }
-    }
-
-    return nullptr;
-}
-
-template <typename T>
-Node<T>* AvlTree<T>::findLowerBound(const T& data) {
-    return find(data)->getNext();
-}
-
 #include "srcConstructor.hpp"
+#include "srcBalance.hpp"
 #include "srcAccess.hpp"
 #include "srcModify.hpp"
-#include "srcBalance.hpp"
 #include "srcTraverse.hpp"

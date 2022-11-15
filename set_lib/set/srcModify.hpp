@@ -1,248 +1,149 @@
 #pragma once // pragma once
 
-template<class T>
-void AvlTree<T>::Add(const T &data) {
-    if (innerAdd(new Node(data), m_root)) {
-        ++m_size;
-    }
-}
-
-template<class T>
-bool AvlTree<T>::innerAdd(Node<T>* newNode, Node<T>* &root) {
-
-    if (!root) {
-        root = newNode;
-        return true;
-    }
-
-    Node<T>* curNode = root;
-    Node<T>* AddNodeParent = nullptr;
-
-    while (curNode) {
-        if (curNode->m_data == newNode->m_data) {
-            return false;
-        } else if (curNode->m_data > newNode->m_data) {
-            AddNodeParent = curNode;
-            curNode = curNode->m_left;
-            if (!curNode) {
-                curNode = newNode;
-                AddNodeParent->m_left = curNode;
-                curNode->m_parent = AddNodeParent;
-
-                Node<T>* tmp = curNode->m_parent;
-                while (tmp) {
-                    tmp = doBalance(tmp);
-                    Node<T>* child = tmp;
-                    tmp = tmp->m_parent;
-                    if (!tmp) {
-                        m_root = child;
-                    }
-                }
-                return true;
-            }
-        } else {
-            AddNodeParent = curNode;
-            curNode = curNode->m_right;
-            if (!curNode) {
-                curNode = newNode;
-                AddNodeParent->m_right = curNode;
-                curNode->m_parent = AddNodeParent;
-
-                Node<T>* tmp = curNode->m_parent;
-                while (tmp) {
-                    tmp = doBalance(tmp);
-                    Node<T>* child = tmp;
-                    tmp = tmp->m_parent;
-                    if (!tmp) {
-                        m_root = child;
-                    }
-                }
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-template<class T>
-void AvlTree<T>::Delete(const T &data) {
-    if (innerDelete(data) && m_size > 0) {
-        --m_size;
-    }
-}
-
-template<class T>
-bool AvlTree<T>::innerDelete(const T &data) {
-    if (!m_root) { return false; }
-    Node<T>* curNode = find(data);
-    if (curNode) {
-        std::cout << "deleted data: " << curNode->m_data << std::endl << std::endl;
-        DeleteNode(curNode);
-        return true;
-    }
-
-    return false;
-}
-
-template<class T>
-void AvlTree<T>::DeleteNode(Node<T>*& deletedNode) {
-        if (deletedNode == m_root && (!deletedNode->m_right || !deletedNode->m_left)) {
-            if (!m_root->m_right && !m_root->m_left) {
-            delete m_root;
-            m_root = nullptr;
-        } else {
-            if (!m_root->m_left) {
-                m_root = m_root->m_right;
-                delete m_root->m_parent;
-                m_root->m_parent = nullptr;
-            }
-            else if (!m_root->m_right) {
-                m_root = m_root->m_left;
-                delete m_root->m_parent;
-                m_root->m_parent = nullptr;
-            }
-        }
+template<typename T, class IsLess>
+void Tree<T, IsLess>::Add(const T& elem) {
+    if (root->size == 0) {
+        root->value = elem;
+        ++root->size;
         return;
     }
-    if (!deletedNode->m_left && !deletedNode->m_right) { // случай для листового узла
-        std::cout << "Branches doesn't exist." << std::endl;
-        if (deletedNode->m_parent) {
-            if (deletedNode->m_parent->m_left == deletedNode) {
-                deletedNode->m_parent->m_left = nullptr;
-            } else if (deletedNode->m_parent->m_right == deletedNode) {
-                deletedNode->m_parent->m_right = nullptr;
-            }
+
+    Node<T>* it = root;
+    Node<T>* new_node = new Node<T>;
+    new_node->value = elem;
+    new_node->height = 1;
+
+    Node<T>* saved_parent;
+    while (it) {
+        saved_parent = it;
+        if (it->value == new_node->value) {
+            delete new_node;
+            return;
         }
-        if (deletedNode->m_parent) {
-            auto* tmp = deletedNode->m_parent;
-            while (tmp) {
-                tmp = doBalance(tmp);
-                auto* child = tmp;
-                tmp = tmp->m_parent;
-                if (!tmp) {
-                    m_root = child;
+        if (isLess(*new_node, *it)) {
+            it = it->left_child;
+        } else {
+            it = it->right_child;
+        }
+    }
+
+    new_node->parent = saved_parent;
+    if (isLess(*new_node, *saved_parent)) {
+        saved_parent->left_child = new_node;
+    } else {
+        saved_parent->right_child = new_node;
+    }
+
+    Balance(saved_parent);
+    if (new_node == root && new_node->left_child && new_node->right_child) {
+        new_node->left_child->next = new_node;
+        new_node->prev = new_node->left_child;
+        new_node->next = new_node->right_child;
+        new_node->right_child->prev = new_node;
+    } else {
+        if (new_node->parent && new_node->parent->left_child == new_node) {   // если нода вставлена влево
+            if (new_node->right_child) {
+                new_node->next = findMin(new_node->right_child);
+                new_node->next->prev = new_node;
+            } else {
+                new_node->next = new_node->parent; // для левого сына, next - его родитель.
+                new_node->parent->prev = new_node;
+            }
+
+
+            if (new_node->left_child) {
+                Node<T>* prevNode = findMax(new_node->left_child);
+                new_node->prev = prevNode;
+                prevNode->next = new_node;
+            } else {
+                auto ptr = new_node->parent;
+                while (ptr->parent && ptr->parent->left_child == ptr) {
+                    ptr = ptr->parent;
+                }
+                if (ptr->parent && ptr->parent->right_child == ptr) {
+                    ptr->parent->next = new_node;
+                    new_node->prev = ptr->parent;
+                }
+            }
+        } else if (new_node->parent && new_node->parent->right_child == new_node) {   // если нода вставлена вправо
+            new_node->parent->next = findMin(new_node);
+            if (new_node->left_child) {
+                new_node->prev = findMin(new_node);
+                new_node->prev->next = new_node;
+            } else {
+                new_node->prev = new_node->parent;
+            }
+
+            // расмматриваем левое поддерево правого поддерева
+            if (new_node->right_child) {
+                Node<T>* nextNode = findMin(new_node->right_child);
+                new_node->next = nextNode;
+                nextNode->prev = new_node;
+            } else {
+                // поднимаемся из правого поддерева левого поддерева
+                auto ptr = new_node->parent;
+                while (ptr->parent && ptr->parent->right_child == ptr) {
+                    ptr = ptr->parent;
+                }
+                if (ptr->parent && ptr->parent->left_child == ptr) {
+                    new_node->next = ptr->parent;
+                    ptr->parent->prev = new_node;
                 }
             }
         }
-        delete deletedNode;
+    }
+}
+
+template<typename T, class IsLess>
+void Tree<T, IsLess>::Erase(const T& elem) {
+
+    Node<T>* del_node = Find(elem);
+    if (!del_node) {
+        return;
+    }
+
+    if (del_node == root && del_node->size == 1) {
+        delete root;
+        root = nullptr;
+        return;
+    }
+
+    if (del_node->right_child) {
+        Node<T>* min = popMin(del_node->right_child);
+        del_node->value = min->value;
+        delete min;
         return;
     } else {
-        if (!deletedNode->m_left) { // случай когда левой ветви нет
-            deletedNode->m_right->m_parent = deletedNode->m_parent;
-            if (deletedNode->m_parent) {
-                if (deletedNode == deletedNode->m_parent->m_right) {
-                    deletedNode->m_parent->m_right = deletedNode->m_right;
-                } else if (deletedNode == deletedNode->m_parent->m_left) {
-                    deletedNode->m_parent->m_left = deletedNode->m_right;
-                }
-            }
-            if (deletedNode->m_parent) {
-                auto* tmp = deletedNode->m_parent;
-                while (tmp) {
-                    tmp = doBalance(tmp);
-                    auto* child = tmp;
-                    tmp = tmp->m_parent;
-                    if (!tmp) {
-                        m_root = child;
-                    }
-                }
-            }
-            delete deletedNode;
-            return;
-        } else if (!deletedNode->m_right) { // случай когда правой ветви нет
-
-            deletedNode->m_left->m_parent = deletedNode->m_parent;
-
-            if (deletedNode->m_parent) {
-                if (deletedNode == deletedNode->m_parent->m_right) {
-                    deletedNode->m_parent->m_right = deletedNode->m_left;
-                } else if (deletedNode == deletedNode->m_parent->m_left) {
-                    deletedNode->m_parent->m_left = deletedNode->m_left;
-                }
+        if (!del_node->left_child) {
+            Node<T>* saved_parent = del_node->parent;
+            if (del_node == root) {
+                return;
             }
 
-            if (deletedNode->m_parent) {
-                auto* tmp = deletedNode->m_parent;
-                while (tmp) {
-                    tmp = doBalance(tmp);
-                    auto* child = tmp;
-                    tmp = tmp->m_parent;
-                    if (!tmp) {
-                        m_root = child;
-                    }
-                }
+            if (isLess(*del_node, *del_node->parent)) {
+                del_node->parent->left_child = nullptr;
+            } else {
+                del_node->parent->right_child = nullptr;
             }
-            delete deletedNode;
-            return;
-        } else { // обе ветки есть
-            std::cout << "Both branches exist" << std::endl;
-
-            Node<T>* minParrent = deletedNode;
-            Node<T>* min = deletedNode->m_right;
-
-            while (min->m_left) {
-                minParrent = min;
-                min = min->m_left;
-            }
-
-            if (minParrent->m_left == min) {
-                minParrent->m_left = min->m_right;
-                if (min->m_right) {
-                    min->m_right->m_parent = minParrent;
-                }
-                min->m_parent = min->m_left = min->m_right = nullptr;
-            }
-
-            if (minParrent->m_right == min) {
-                minParrent->m_right = min->m_right;
-                if (min->m_right) {
-                    min->m_right->m_parent = minParrent;
-                }
-                min->m_parent = min->m_left = min->m_right = nullptr;
-            }
-
-            deletedNode->m_data = min->m_data;
-            // min->m_right = nullptr;
-            if (min->m_parent) {
-                auto* tmp = deletedNode->m_parent;
-                while (tmp) {
-                    tmp = doBalance(tmp);
-                    auto* child = tmp;
-                    tmp = tmp->m_parent;
-                    if (!tmp) {
-                        m_root = child;
-                    }
-                }
-            }
-            delete min;
+            del_node->parent = nullptr;
+            Balance(saved_parent);
+            delete del_node;
             return;
         }
-    }
-}
+        del_node->left_child->parent = del_node->parent;
 
-template<class T>
-bool AvlTree<T>::Has(const T &data) const{
-    Node<T>* curNode = m_root;
-    while(curNode) {
-        if (curNode->m_data == data) {
-            return true;
+        if (del_node == root) {
+            root = del_node->left_child;
+            del_node->left_child->parent = nullptr;
+        } else if (isLess(*del_node->left_child, *del_node->parent)) {
+            del_node->parent->left_child = del_node->left_child;
+        } else {
+            del_node->parent->right_child = del_node->left_child;
         }
-        else if (curNode->m_data < data) {
-            curNode = curNode->m_right;
-        }
-        else {
-            curNode = curNode->m_left;
-        }
-    }
-    return false;
-}
 
-template<class T>
-void AvlTree<T>::destroyTree(Node<T>* curNode) {
-    if (curNode) {
-        destroyTree(curNode->m_left);
-        destroyTree(curNode->m_right);
-        delete curNode;
+        Balance(del_node->left_child);
+
+        delete del_node;
     }
+
 }

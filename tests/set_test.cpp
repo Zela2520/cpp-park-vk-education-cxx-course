@@ -11,7 +11,46 @@ TEST(SetLib, LiveCycleTest) {
 }
 
 TEST(SetLib, IteratorTest) {
+    AvlTree<int> tree;
+    for(int i = 1; i < 10; ++i) {
+        tree.Add(i);
+    }
 
+    int i = 1;
+    for (auto it = tree.begin(); it != tree.end(); ++it) {
+        EXPECT_EQ(it.m_pointer->getData(), i);
+        if (it.m_pointer->getNext()) {
+            EXPECT_EQ(it.m_pointer->getNext()->getData(), i + 1);
+        }
+        if (it.m_pointer->getPrev()) {
+            EXPECT_EQ(it.m_pointer->getPrev()->getData(), i - 1);
+        }
+        ++i;
+    }
+
+    int j = 9;
+    for (auto it = tree.rbegin(); it != tree.rend(); ++it) {
+        EXPECT_EQ(it.m_pointer->getData(), j);
+        if (it.m_pointer->getNext()) {
+            EXPECT_EQ(it.m_pointer->getNext()->getData(), j + 1);
+        }
+        if (it.m_pointer->getPrev()) {
+            EXPECT_EQ(it.m_pointer->getPrev()->getData(), j - 1);
+        }
+        --j;
+    }
+
+    i = 2;
+    tree.Delete(9);
+    tree.Delete(1);
+    tree.Delete(4);
+    for (auto it = tree.begin(); it != tree.end(); ++it) {
+        EXPECT_EQ(it.m_pointer->getData(), i);
+        if (i == 3) {
+            ++i;
+        }
+        ++i;
+    }
 }
 
 TEST(SetLib, ModifyTest) {
@@ -70,10 +109,10 @@ TEST(SetLib, DeleteRootTest) {
 TEST(SetLib, GetDataTest) {
     AvlTree<int> tree{1, 2, 3, 4, 5, 6, 7, 8, 9};
     EXPECT_EQ(tree.find(3)->getData(), 3);
-    // EXPECT_EQ(tree.findLowerBound(4)->getData(), 5);
+    EXPECT_EQ(tree.findLowerBound(4)->getData(), 5);
     
     EXPECT_TRUE(tree.find(10) == nullptr);
-    // EXPECT_EQ(tree.findLowerBound(9)->getData() == nullptr);
+    EXPECT_TRUE(tree.findLowerBound(9) == nullptr);
 }
 
 
