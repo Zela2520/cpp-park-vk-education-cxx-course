@@ -82,7 +82,6 @@ public:
 
     void Add(const Node<T> &curNode) { Add(curNode.value); }
     void Erase(const Node<T> &curNode) { Erase(curNode.value); }
-    void Has(const Node<T> &curNode) { Has(curNode.value); }
 
     Node<T>* Root() const {return root;}
     bool isEmpty() const {return root == nullptr;}

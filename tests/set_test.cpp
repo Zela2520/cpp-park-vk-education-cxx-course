@@ -2,6 +2,7 @@
 
 
 #include <iostream>
+#include <vector>
 #include "set.hpp"
 
 
@@ -83,12 +84,61 @@ TEST(SetLib, ModifyTest) {
         EXPECT_EQ(curElem, it.m_pointer->value);
         ++curElem;
     }
+
+    EXPECT_TRUE(tree2->Has(7) == true);
+    EXPECT_TRUE(tree2->Has(10) == false);
+
     delete tree2;
     tree2 = nullptr;
+
+    auto tree3 = std::make_unique<Tree<int>>();
+
+    tree3->Add(5);
+    tree3->Add(1);
+    tree3->Add(9);
+    tree3->Add(6);
+    tree3->Add(7);
+    tree3->Add(2);
+    tree3->Add(3);
+    tree3->Add(8);
+    tree3->Add(4);
+
+
+    tree3->Erase(5);
+    tree3->Erase(4);
+    tree3->Erase(1);
+    tree3->Erase(2);
+
+    curElem = 9;
+    for (auto it = tree3->rbegin(); it != tree3->rend(); ++it) {
+        if (curElem == 4) {
+            --curElem;
+        }
+        if (curElem == 5) {
+            --curElem;
+        }
+        EXPECT_EQ(curElem, it.m_pointer->value);
+        --curElem;
+    }
+
+    std::vector<int> vec;
+
+    for (auto it = tree3->begin(); it != tree3->end(); ++it) {
+        vec.push_back(it.m_pointer->value);
+    }
+
+    EXPECT_EQ(vec.size(), 5);
+
+    EXPECT_EQ(vec[0], 3);
+    EXPECT_EQ(vec[1], 6);
+    EXPECT_EQ(vec[2], 7);
+    EXPECT_EQ(vec[3], 8);
+    EXPECT_EQ(vec[4], 9);
 }
 
 TEST(SetLib, GetDataTest) {
     Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2, 91, 21, 32, 12, 77, 44, 10, 21, 12, 55, 95, 11};
+    EXPECT_EQ(19, tree->Size());
     EXPECT_EQ(tree->Find(91)->value, 91);
     EXPECT_EQ(tree->findLowerBound(91)->value, 95);
     
