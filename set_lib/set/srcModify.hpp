@@ -125,8 +125,22 @@ void Tree<T, IsLess>::Erase(const T& elem) {
             } else {
                 del_node->parent->right_child = nullptr;
             }
+
             del_node->parent = nullptr;
             Balance(saved_parent);
+
+            if (!del_node->next || !del_node->prev) {
+                if (!del_node->prev) {
+                    del_node->next->prev = nullptr;
+                } else {
+                    del_node->prev->next = nullptr;
+                }
+                del_node->next = del_node->prev = nullptr;
+            } else {
+                del_node->prev->next = del_node->next;
+                del_node->next->prev = del_node->prev;
+                del_node->prev = del_node->next = nullptr;
+            }
             delete del_node;
             return;
         }
@@ -142,6 +156,15 @@ void Tree<T, IsLess>::Erase(const T& elem) {
         }
 
         Balance(del_node->left_child);
+
+        if (!del_node->next || !del_node->value) {
+            del_node->next = del_node->prev = nullptr;
+        } else {
+            del_node->prev->next = del_node->next;
+            del_node->next->prev = del_node->prev;
+            del_node->prev = del_node->next = nullptr;
+        }
+
 
         delete del_node;
     }

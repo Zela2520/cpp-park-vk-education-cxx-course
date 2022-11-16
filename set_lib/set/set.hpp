@@ -90,7 +90,7 @@ public:
 
     // search functions
     Node<T>* Find(const T& elem) const; // +
-    Node<T>* findLowerBound(const T& data) const; // +
+    Node<T>* findLowerBound(const T& data) const;
     Node<T>* getRoot() {return root;} // +
     T getRootData() const {return root->value;} // +
 

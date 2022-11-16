@@ -22,7 +22,7 @@ Node<T>* Tree<T, IsLess>::Find(const T& elem) const {
 
 template<typename T, class IsLess>
 Node<T>* Tree<T, IsLess>::findLowerBound(const T& data) const {
-    return find(data)->next;
+    return Find(data)->next;
 }
 
 template<typename T, class IsLess>
@@ -38,6 +38,19 @@ Node<T>* Tree<T, IsLess>::popMin(Node<T>* begin) {
         it->right_child->parent = nullptr;
         it->right_child = nullptr;
         Balance(it);
+        if (!saved_min->next || !saved_min->prev) {
+            if (!saved_min->prev) {
+                saved_min->next->prev = nullptr;
+            } else {
+                it->prev->next = nullptr;
+            }
+            saved_min->next = saved_min->prev = nullptr;
+        } else {
+            saved_min->prev->next = saved_min->next;
+            saved_min->next->prev = saved_min->prev;
+            saved_min->prev = saved_min->next = nullptr;
+        }
+
         return saved_min;
     } else {
         Node<T>* saved_parent = it->parent;
@@ -49,6 +62,19 @@ Node<T>* Tree<T, IsLess>::popMin(Node<T>* begin) {
 
         it->parent = nullptr;
         Balance(saved_parent);
+        if (!it->next || !it->prev) {
+            if (!it->prev) {
+                it->next->prev = nullptr;
+            } else {
+                it->prev->next = nullptr;
+            }
+            it->next = it->prev = nullptr;
+        } else {
+            it->prev->next = it->next;
+            it->next->prev = it->prev;
+            it->prev = it->next = nullptr;
+        }
+
         return it;
     }
     return it;

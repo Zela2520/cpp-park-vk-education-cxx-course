@@ -36,16 +36,16 @@ void Tree<T, IsLess>::bfs() {
         m_queue.pop();
         if (curNode) {
             std::cout << "data: " << curNode->value;
-            if (curNode->next) {
-                std::cout << "  \tnext: " << curNode->next->value;
-            }
-            if (curNode->prev) {
-                std::cout << "  \tprev: " << curNode->prev->value;
-            }
-//            std::cout << "\theight: " << curNode->height;
-//            if (curNode->parent) {
-//                std::cout << "\tparent: " << curNode->parent->value;
+//            if (curNode->next) {
+//                std::cout << "  \tnext: " << curNode->next->value;
 //            }
+//            if (curNode->prev) {
+//                std::cout << "  \tprev: " << curNode->prev->value;
+//            }
+            std::cout << "\theight: " << curNode->height;
+            if (curNode->parent) {
+                std::cout << "\tparent: " << curNode->parent->value;
+            }
 
             std::cout << std::endl;
 

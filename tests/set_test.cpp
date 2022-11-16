@@ -6,113 +6,96 @@
 
 
 TEST(SetLib, LiveCycleTest) {
-    AvlTree<int> tree;
-    AvlTree<int> tree2{1, 2, 3, 4, 5, 6, 7, 8, 9};
+    auto tree = std::make_unique<Tree<int>>();
+    EXPECT_FALSE(tree == nullptr);
+    Tree<int>* tree2 = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
+    EXPECT_EQ(9, tree2->Size());
+    delete tree2;
+    tree2 = nullptr;
 }
 
 TEST(SetLib, IteratorTest) {
-    AvlTree<int> tree;
-    for(int i = 1; i < 10; ++i) {
-        tree.Add(i);
+    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
+
+    int curElem = 1;
+    for (auto it = tree->begin(); it != tree->end(); ++it) {
+        EXPECT_EQ(curElem, it.m_pointer->value);
+        ++curElem;
     }
 
-    int i = 1;
-    for (auto it = tree.begin(); it != tree.end(); ++it) {
-        EXPECT_EQ(it.m_pointer->getData(), i);
-        if (it.m_pointer->getNext()) {
-            EXPECT_EQ(it.m_pointer->getNext()->getData(), i + 1);
-        }
-        if (it.m_pointer->getPrev()) {
-            EXPECT_EQ(it.m_pointer->getPrev()->getData(), i - 1);
-        }
-        ++i;
+    curElem = 9;
+    for (auto it = tree->rbegin(); it != tree->rend(); --it) {
+        EXPECT_EQ(curElem, it.m_pointer->value);
+        --curElem;
     }
 
-    int j = 9;
-    for (auto it = tree.rbegin(); it != tree.rend(); ++it) {
-        EXPECT_EQ(it.m_pointer->getData(), j);
-        if (it.m_pointer->getNext()) {
-            EXPECT_EQ(it.m_pointer->getNext()->getData(), j + 1);
-        }
-        if (it.m_pointer->getPrev()) {
-            EXPECT_EQ(it.m_pointer->getPrev()->getData(), j - 1);
-        }
-        --j;
-    }
+    delete tree;
+    tree = nullptr;
 
-    i = 2;
-    tree.Delete(9);
-    tree.Delete(1);
-    tree.Delete(4);
-    for (auto it = tree.begin(); it != tree.end(); ++it) {
-        EXPECT_EQ(it.m_pointer->getData(), i);
-        if (i == 3) {
-            ++i;
+    auto tree2 = std::make_unique<Tree<int>>();
+
+    tree2->Add(5);
+    tree2->Add(1);
+    tree2->Add(9);
+    tree2->Add(6);
+    tree2->Add(7);
+    tree2->Add(2);
+    tree2->Add(3);
+    tree2->Add(8);
+    tree2->Add(4);
+
+
+    tree2->Erase(7);
+    tree2->Erase(4);
+    tree2->Erase(1);
+    tree2->Erase(9);
+
+    curElem = 2;
+    for (auto it = tree2->begin(); it != tree2->end(); ++it) {
+        if (curElem == 4 || curElem == 7) {
+            ++curElem;
         }
-        ++i;
+        EXPECT_EQ(curElem, it.m_pointer->value);
+        ++curElem;
     }
 }
 
 TEST(SetLib, ModifyTest) {
-    AvlTree<int> tree;
+    auto tree = std::make_unique<Tree<int>>();
     for(int i = 1; i < 10; ++i) {
-        tree.Add(i);
+        tree->Add(i);
     }
     for (int i = 1; i < 8; ++i) {
-        tree.Delete(i);
+        tree->Erase(i);
     }
-    EXPECT_EQ(tree.Size(), 2);
 
-    AvlTree<int> tree2{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    for (int i = 9; i > 0; --i) {
-        tree2.Delete(i);
+    int curElem = 8;
+    for (auto it = tree->begin(); it != tree->end(); ++it) {
+        EXPECT_EQ(curElem, it.m_pointer->value);
+        ++curElem;
     }
-    EXPECT_EQ(tree2.Size(), 0);
+    EXPECT_EQ(tree->Size(), 2);
 
-    AvlTree<int> tree3;
-    for(int i = 9; i > 0; --i) {
-        tree3.Add(i);
-    }
-    for (int i = 1; i < 10; ++i) {
-        tree3.Delete(i);
-    }
-    EXPECT_EQ(tree3.Size(), 0);
 
-    AvlTree<int> tree4;
-    for(int i = 100; i > 0; --i) {
-        tree4.Add(i);
+    Tree<int>* tree2 = new Tree<int>{9, 2, 3, 7, 1, 8, 5, 4, 6};
+    curElem = 1;
+    for (auto it = tree2->begin(); it != tree2->end(); ++it) {
+        EXPECT_EQ(curElem, it.m_pointer->value);
+        ++curElem;
     }
-    for (int i = 1; i < 101; ++i) {
-        tree4.Delete(i);
-    }
-    EXPECT_EQ(tree4.Size(), 0);
-
-    AvlTree<int> tree5;
-    for(int i = 1; i < 101; ++i) {
-        tree5.Add(i);
-    }
-    for (int i = 100; i > 0; --i) {
-        tree5.Delete(i);
-    }
-    EXPECT_EQ(tree5.Size(), 0);
-}
-
-TEST(SetLib, DeleteRootTest) {
-    AvlTree<int> tree{1, 2, 3, 4, 5, 6, 7, 8, 9};
-
-    tree.Delete(4);
-
-    EXPECT_EQ(tree.Size(), 8);
-    EXPECT_EQ(tree.getRootData(), 5);
+    delete tree2;
+    tree2 = nullptr;
 }
 
 TEST(SetLib, GetDataTest) {
-    AvlTree<int> tree{1, 2, 3, 4, 5, 6, 7, 8, 9};
-    EXPECT_EQ(tree.find(3)->getData(), 3);
-    EXPECT_EQ(tree.findLowerBound(4)->getData(), 5);
+    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2, 91, 21, 32, 12, 77, 44, 10, 21, 12, 55, 95, 11};
+    EXPECT_EQ(tree->Find(91)->value, 91);
+    EXPECT_EQ(tree->findLowerBound(91)->value, 95);
     
-    EXPECT_TRUE(tree.find(10) == nullptr);
-    EXPECT_TRUE(tree.findLowerBound(9) == nullptr);
+    EXPECT_TRUE(tree->Find(69) == nullptr);
+    EXPECT_TRUE(tree->findLowerBound(95) == nullptr);
+    delete tree;
+    tree = nullptr;
 }
 
 
