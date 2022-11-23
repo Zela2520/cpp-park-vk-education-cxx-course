@@ -9,7 +9,7 @@ void Tree<T, IsLess>::postOrderTree(Node<T>* begin, const Action& act) {
     Node<T>* top_node = nullptr;
 
     while (!stack.empty() || it != nullptr) {
-        if (it != nullptr) {
+        if (it) {
             stack.push(it);
             it = it->left_child;
         } else {
@@ -36,13 +36,15 @@ void Tree<T, IsLess>::bfs() {
         m_queue.pop();
         if (curNode) {
             std::cout << "data: " << curNode->value;
-//            if (curNode->next) {
-//                std::cout << "  \tnext: " << curNode->next->value;
-//            }
-//            if (curNode->prev) {
-//                std::cout << "  \tprev: " << curNode->prev->value;
-//            }
+            if (curNode->next) {
+                std::cout << "  \tnext: " << curNode->next->value;
+            }
+            if (curNode->prev) {
+                std::cout << "  \tprev: " << curNode->prev->value;
+            }
+
             std::cout << "\theight: " << curNode->height;
+
             if (curNode->parent) {
                 std::cout << "\tparent: " << curNode->parent->value;
             }

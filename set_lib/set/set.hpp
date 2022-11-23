@@ -12,7 +12,7 @@
 template<class T, class IsLess> class Tree;
 
 template<typename T1>
-struct Node {
+class Node {
     Node<T1>* parent;
     Node<T1>* left_child;
     Node<T1>* right_child;
@@ -23,6 +23,7 @@ struct Node {
     size_t size;
     T1 value;
 
+public:
     Node() : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1) {}
     Node(T1 _value) : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1), value(_value) {}
 
@@ -30,7 +31,12 @@ struct Node {
         return os << curNode.value;
     }
 
+    T1 getValue() const {return value;}
+
+    template<typename T, class IsLess> friend class Tree;
     template<class> friend class AvlTreeIterator;
+    template<class> friend class IsLessDefault;
+    template<class> friend class ActionDefault;
 };
 
 
@@ -53,6 +59,9 @@ class Tree {
     Node<T>* popMin(Node<T>* begin);
     Node<T>* findMin(Node<T>* targetBranch);
     Node<T>* findMax(Node<T>* targetBranch);
+
+    // links
+    void addLinks(Node<T>* new_node);
 
 public:
     typedef AvlTreeIterator<Node<T>> iterator;
@@ -80,9 +89,6 @@ public:
     void Erase(const T& elem);
     bool Has(const T &data) const;
 
-    void Add(const Node<T> &curNode) { Add(curNode.value); }
-    void Erase(const Node<T> &curNode) { Erase(curNode.value); }
-
     Node<T>* Root() const {return root;}
     bool isEmpty() const {return root == nullptr;}
     size_t Size() {if (isEmpty()) {return 0;} return root->size;}
@@ -101,5 +107,6 @@ public:
 #include "srcConstructor.hpp"
 #include "srcBalance.hpp"
 #include "srcAccess.hpp"
+#include "srcLinks.hpp"
 #include "srcModify.hpp"
 #include "srcTraverse.hpp"

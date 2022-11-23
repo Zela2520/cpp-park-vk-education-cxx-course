@@ -9,13 +9,13 @@ template<typename T>
 class ActionDefault;
 
 template<class T, class IsLess = IsLessDefault<T>> class Tree;
-template<class T1> struct Node;
+template<class T1> class Node;
 
 
 template<class Iterator>
 class AvlTreeIterator {
     template<class, class> friend class Tree;
-    template<class> friend struct Node;
+    template<class> friend class Node;
 public:
     typedef Iterator iterator_type;
     typedef std::bidirectional_iterator_tag bidirectional_iterator;
