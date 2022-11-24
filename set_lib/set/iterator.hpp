@@ -17,10 +17,11 @@ class AvlTreeIterator {
     template<class, class> friend class Tree;
     template<class> friend class Node;
 public:
-    typedef Iterator iterator_type;
-    typedef std::bidirectional_iterator_tag bidirectional_iterator;
-    typedef iterator_type value_type;
-    typedef ptrdiff_t difference_type;
+    using iterator_type = Iterator;
+    using bidirectional_iterator = std::bidirectional_iterator_tag;
+    using value_type = iterator_type;
+    using difference_type = ptrdiff_t;
+    
     typedef iterator_type &reference;
     typedef iterator_type *pointer;
 
@@ -44,4 +45,6 @@ public:
         if (m_pointer) { m_pointer = m_pointer->prev;}
         return *tmp;
     }
+
+    
 };

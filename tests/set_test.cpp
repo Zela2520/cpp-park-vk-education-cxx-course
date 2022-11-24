@@ -7,12 +7,39 @@
 
 
 TEST(SetLib, LiveCycleTest) {
+    // default constructor
     auto tree = std::make_unique<Tree<int>>();
     EXPECT_FALSE(tree == nullptr);
+    // list constructor
     Tree<int>* tree2 = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
     EXPECT_EQ(9, tree2->Size());
     delete tree2;
     tree2 = nullptr;
+
+    // operator =
+    Tree<int>* tree3 = new Tree<int>{5, 20, 1, 8, 2, 3, 4, 14, 18, 11, 6, 15, 9, 7, 17, 10, 13, 16, 12, 19};
+    Tree<int>* tree4 = new Tree<int>;
+    *tree4 = *tree3;
+    delete tree3;
+    tree3 = nullptr;
+    int curElem = 20;
+    for (auto it = tree4->rbegin(); it != tree4->rend(); --it) {
+        EXPECT_EQ(curElem, it.m_pointer->getValue());
+        --curElem;
+    }
+    delete tree4;
+    tree4 = nullptr;
+
+    // copy constructor
+    Tree<int>* tree5 = new Tree<int>{5, 20, 1, 8, 2, 3, 4, 14, 18, 11, 6, 15, 9, 7, 17, 10, 13, 16, 12, 19};
+    auto tree6 = std::make_unique<Tree<int>>(tree5);
+    delete tree5;
+
+    curElem = 1;
+    for (auto it = tree6->begin(); it != tree6->end(); ++it) {
+        EXPECT_EQ(curElem, it.m_pointer->getValue());
+        ++curElem;
+    }
 }
 
 TEST(SetLib, IteratorTest) {

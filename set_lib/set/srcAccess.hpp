@@ -127,12 +127,14 @@ typename Tree<T, IsLess>::iterator Tree<T, IsLess>::rbegin() {
         return typename Tree<T, IsLess>::iterator(curNode);
     }
 
-    return this->end();
+    // return this->end();
+    return nullptr;
 }
 
 template<typename T, class IsLess>
 typename Tree<T, IsLess>::iterator Tree<T, IsLess>::rend() {
-    return --this->begin();
+    // return --this->begin();
+    return nullptr;
 }
 
 template<typename T, class IsLess>
@@ -164,12 +166,14 @@ typename Tree<T, IsLess>::const_iterator Tree<T, IsLess>::rbegin() const {
         return typename Tree<T, IsLess>::const_iterator(curNode);
     }
 
-    return this->end();
+    // return this->end();
+    return nullptr;
 }
 
 template<typename T, class IsLess>
 typename Tree<T, IsLess>::const_iterator Tree<T, IsLess>::rend() const {
-    return --this->begin();
+    // return --this->begin();
+    return nullptr;
 }
 
 template<typename T, class IsLess>

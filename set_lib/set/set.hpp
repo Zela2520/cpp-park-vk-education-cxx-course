@@ -5,7 +5,7 @@
 #include <stack>
 #include <queue>
 #include <memory>
-
+#include <typeinfo>
 
 #include "iterator.hpp"
 
@@ -26,7 +26,6 @@ class Node {
 public:
     Node() : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1) {}
     Node(T1 _value) : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1), value(_value) {}
-
     friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
         return os << curNode.value;
     }
@@ -63,14 +62,17 @@ class Tree {
     // links
     void addLinks(Node<T>* new_node);
 
+    // copy function
+    void copyTree(Node<T>* copyObj, Node<T>* target);
+
 public:
-    typedef AvlTreeIterator<Node<T>> iterator;
-    typedef AvlTreeIterator<const Node<T>> const_iterator;
+    using iterator = AvlTreeIterator<Node<T>>;
+    using const_iterator =  AvlTreeIterator<const Node<T>>;
 
     Tree(const IsLess& is_less = IsLessDefault<T>());
-    Tree(const T&) = delete;
     Tree(const std::initializer_list<T> &list);
-    Tree& operator=(const Tree &other) = delete;
+    Tree(const Tree *other);
+    Tree& operator=(const Tree &other);
     ~Tree();
 
     iterator begin();
