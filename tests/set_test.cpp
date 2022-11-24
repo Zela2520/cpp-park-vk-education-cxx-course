@@ -179,6 +179,14 @@ TEST(MainOperation, EraseTest) {
     EXPECT_EQ(vec[2], 7);
     EXPECT_EQ(vec[3], 8);
     EXPECT_EQ(vec[4], 9);
+
+    tree3->Erase(3);
+    tree3->Erase(6);
+    tree3->Erase(7);
+    tree3->Erase(8);
+    tree3->Erase(9);
+    
+    EXPECT_EQ(tree3->Size(), 0);
 }
 
 TEST(MainOperation, HasTest) {
