@@ -70,6 +70,8 @@ public:
     using const_iterator =  AvlTreeIterator<const Node<T>>;
 
     Tree(const IsLess& is_less = IsLessDefault<T>());
+    template<std::random_access_iterator Iterator>
+    Tree(Iterator begin, Iterator end);
     Tree(const std::initializer_list<T> &list);
     Tree(const Tree *other);
     Tree& operator=(const Tree &other);

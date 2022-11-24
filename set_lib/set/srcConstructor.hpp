@@ -13,6 +13,15 @@ Tree<T, IsLess>::Tree(const IsLess& is_less) : isLess(is_less) {
 }
 
 template<typename T, class IsLess>
+template<std::random_access_iterator Iterator>
+Tree<T, IsLess>::Tree(Iterator begin, Iterator end) : Tree() {
+    std::random_access_iterator auto randIterator = begin;
+    while (randIterator != end) {
+        Add(*randIterator++);
+    }
+}
+
+template<typename T, class IsLess>
 Tree<T, IsLess>::Tree(const std::initializer_list<T> &list) : Tree() {
     for (const auto &elem : list) {
         Add(elem);

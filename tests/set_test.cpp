@@ -10,6 +10,17 @@ TEST(LiveCycle, DefaultConstructorTest) {
     EXPECT_FALSE(tree == nullptr);
 }
 
+TEST(LiveCycle, IteratorConstructorTest) {
+    std::vector<int> list = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 15, 17, 14, 13, 16, 20, 19, 18};
+    auto tree = std::make_unique<Tree<int>>(list.begin(), list.end());
+
+    int curElem = 1;
+    for (auto it = tree->begin(); it != tree->end(); ++it) {
+        EXPECT_EQ(curElem, it.m_pointer->getValue());
+        ++curElem;
+    }
+}
+
 TEST(LiveCycle, ListConstructorTest) {
     Tree<int>* tree2 = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
     EXPECT_EQ(9, tree2->Size());
@@ -110,7 +121,7 @@ TEST(MainOperation, AddTest) {
     for(int i = 1; i < 10; ++i) {
         tree->Add(i);
     }
-    
+
     for (int i = 1; i < 8; ++i) {
         tree->Erase(i);
     }
