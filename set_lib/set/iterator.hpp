@@ -21,9 +21,8 @@ public:
     using bidirectional_iterator = std::bidirectional_iterator_tag;
     using value_type = iterator_type;
     using difference_type = ptrdiff_t;
-    
-    typedef iterator_type &reference;
-    typedef iterator_type *pointer;
+    using reference = iterator_type&;
+    using pointer = iterator_type*;
 
     iterator_type* m_pointer;
 private:

@@ -5,45 +5,53 @@
 #include <vector>
 #include "set.hpp"
 
-
-TEST(SetLib, LiveCycleTest) {
-    // default constructor
+TEST(LiveCycle, DefaultConstructorTest) {
     auto tree = std::make_unique<Tree<int>>();
     EXPECT_FALSE(tree == nullptr);
-    // list constructor
+}
+
+TEST(LiveCycle, ListConstructorTest) {
     Tree<int>* tree2 = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
     EXPECT_EQ(9, tree2->Size());
+
     delete tree2;
     tree2 = nullptr;
+}
 
-    // operator =
-    Tree<int>* tree3 = new Tree<int>{5, 20, 1, 8, 2, 3, 4, 14, 18, 11, 6, 15, 9, 7, 17, 10, 13, 16, 12, 19};
-    Tree<int>* tree4 = new Tree<int>;
-    *tree4 = *tree3;
-    delete tree3;
-    tree3 = nullptr;
-    int curElem = 20;
-    for (auto it = tree4->rbegin(); it != tree4->rend(); --it) {
-        EXPECT_EQ(curElem, it.m_pointer->getValue());
-        --curElem;
-    }
-    delete tree4;
-    tree4 = nullptr;
-
-    // copy constructor
+TEST(LiveCycle, CopyConstructorTest) {
     Tree<int>* tree5 = new Tree<int>{5, 20, 1, 8, 2, 3, 4, 14, 18, 11, 6, 15, 9, 7, 17, 10, 13, 16, 12, 19};
-    auto tree6 = std::make_unique<Tree<int>>(tree5);
-    delete tree5;
+    auto tree6 = std::make_unique<Tree<int>>(tree5); // copy constructor calling
 
-    curElem = 1;
+    delete tree5;
+    tree5 = nullptr;
+
+    int curElem = 1;
     for (auto it = tree6->begin(); it != tree6->end(); ++it) {
         EXPECT_EQ(curElem, it.m_pointer->getValue());
         ++curElem;
     }
 }
 
-TEST(SetLib, IteratorTest) {
-    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2};
+TEST(LiveCycle, EqualOperatorTest) {
+    Tree<int>* tree3 = new Tree<int>{5, 20, 1, 8, 2, 3, 4, 14, 18, 11, 6, 15, 9, 7, 17, 10, 13, 16, 12, 19};
+    Tree<int>* tree4 = new Tree<int>;
+    *tree4 = *tree3; // equal operator calling
+
+    delete tree3;
+    tree3 = nullptr;
+
+    int curElem = 20;
+    for (auto it = tree4->rbegin(); it != tree4->rend(); --it) {
+        EXPECT_EQ(curElem, it.m_pointer->getValue());
+        --curElem;
+    }
+
+    delete tree4;
+    tree4 = nullptr;
+}
+
+TEST(Iterator, StraightStrokeTest) {
+    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2, 7, 3};
 
     int curElem = 1;
     for (auto it = tree->begin(); it != tree->end(); ++it) {
@@ -51,7 +59,14 @@ TEST(SetLib, IteratorTest) {
         ++curElem;
     }
 
-    curElem = 9;
+    delete tree;
+    tree = nullptr;
+}
+
+TEST(Iterator, ReverseStrokeTest) {
+    Tree<int>* tree = new Tree<int>{9, 2, 3, 7, 1, 8, 5, 4, 6, 1, 9};
+
+    int curElem = 9;
     for (auto it = tree->rbegin(); it != tree->rend(); --it) {
         EXPECT_EQ(curElem, it.m_pointer->getValue());
         --curElem;
@@ -59,7 +74,9 @@ TEST(SetLib, IteratorTest) {
 
     delete tree;
     tree = nullptr;
+}
 
+TEST(Iterator, ModifySetTest) {
     auto tree2 = std::make_unique<Tree<int>>();
 
     tree2->Add(5);
@@ -72,13 +89,12 @@ TEST(SetLib, IteratorTest) {
     tree2->Add(8);
     tree2->Add(4);
 
-
     tree2->Erase(7);
     tree2->Erase(4);
     tree2->Erase(1);
     tree2->Erase(9);
 
-    curElem = 2;
+    int curElem = 2;
     for (auto it = tree2->begin(); it != tree2->end(); ++it) {
         if (curElem == 4 || curElem == 7) {
             ++curElem;
@@ -88,11 +104,13 @@ TEST(SetLib, IteratorTest) {
     }
 }
 
-TEST(SetLib, ModifyTest) {
+TEST(MainOperation, AddTest) {
     auto tree = std::make_unique<Tree<int>>();
+
     for(int i = 1; i < 10; ++i) {
         tree->Add(i);
     }
+    
     for (int i = 1; i < 8; ++i) {
         tree->Erase(i);
     }
@@ -102,22 +120,11 @@ TEST(SetLib, ModifyTest) {
         EXPECT_EQ(curElem, it.m_pointer->getValue());
         ++curElem;
     }
+
     EXPECT_EQ(tree->Size(), 2);
+}
 
-
-    Tree<int>* tree2 = new Tree<int>{9, 2, 3, 7, 1, 8, 5, 4, 6};
-    curElem = 1;
-    for (auto it = tree2->begin(); it != tree2->end(); ++it) {
-        EXPECT_EQ(curElem, it.m_pointer->getValue());
-        ++curElem;
-    }
-
-    EXPECT_TRUE(tree2->Has(7) == true);
-    EXPECT_TRUE(tree2->Has(10) == false);
-
-    delete tree2;
-    tree2 = nullptr;
-
+TEST(MainOperation, EraseTest) {
     auto tree3 = std::make_unique<Tree<int>>();
 
     tree3->Add(5);
@@ -136,7 +143,7 @@ TEST(SetLib, ModifyTest) {
     tree3->Erase(1);
     tree3->Erase(2);
 
-    curElem = 9;
+    int curElem = 9;
     for (auto it = tree3->rbegin(); it != tree3->rend(); ++it) {
         if (curElem == 4) {
             --curElem;
@@ -163,13 +170,37 @@ TEST(SetLib, ModifyTest) {
     EXPECT_EQ(vec[4], 9);
 }
 
-TEST(SetLib, GetDataTest) {
+TEST(MainOperation, HasTest) {
+    Tree<int>* tree2 = new Tree<int>{9, 2, 3, 7, 1, 8, 5, 4, 6};
+    int curElem = 1;
+    for (auto it = tree2->begin(); it != tree2->end(); ++it) {
+        EXPECT_EQ(curElem, it.m_pointer->getValue());
+        ++curElem;
+    }
+
+    EXPECT_TRUE(tree2->Has(7) == true);
+    EXPECT_TRUE(tree2->Has(10) == false);
+
+    delete tree2;
+    tree2 = nullptr;
+}
+
+TEST(GetData, FindTest) {
     Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2, 91, 21, 32, 12, 77, 44, 10, 21, 12, 55, 95, 11};
     EXPECT_EQ(19, tree->Size());
+    EXPECT_EQ(tree->Find(77)->getValue(), 77);
+    EXPECT_EQ(tree->Find(21)->getValue(), 21);
     EXPECT_EQ(tree->Find(91)->getValue(), 91);
-    EXPECT_EQ(tree->findLowerBound(91)->getValue(), 95);
-    
     EXPECT_TRUE(tree->Find(69) == nullptr);
+    delete tree;
+    tree = nullptr;
+}
+
+TEST(GetData, FindLowerBoundTest) {
+    Tree<int>* tree = new Tree<int>{6, 3, 8, 9, 5, 4, 1, 7, 2, 91, 21, 32, 12, 77, 44, 10, 21, 12, 55, 95, 11};
+    EXPECT_EQ(tree->findLowerBound(1)->getValue(), 2);
+    EXPECT_EQ(tree->findLowerBound(8)->getValue(), 9);
+    EXPECT_EQ(tree->findLowerBound(91)->getValue(), 95);
     EXPECT_TRUE(tree->findLowerBound(95) == nullptr);
     delete tree;
     tree = nullptr;
