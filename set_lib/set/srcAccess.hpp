@@ -1,28 +1,72 @@
 #pragma once  // pragma once
 
 template<typename T, class IsLess>
-Node<T>* Tree<T, IsLess>::Find(const T& elem) const {
+typename Tree<T, IsLess>::iterator Tree<T, IsLess>::find(const T& elem) const {
     Node<T>* it = root;
-    auto finded_node = std::make_unique<Node<T>>();
-    finded_node->value = elem;
+
+    while (it) {
+        if (it->value == elem) {
+            return typename Tree<T, IsLess>::iterator(it);
+        }
+
+        if (isLess(elem, it->value)) {
+            it = it->left_child;
+        } else {
+            it = it->right_child;
+        }
+    }
+    return typename Tree<T, IsLess>::iterator(nullptr);
+}
+
+template<typename T, class IsLess>
+Node<T>* Tree<T, IsLess>::FindNode(const T& elem) const {
+    Node<T>* it = root;
 
     while (it) {
         if (it->value == elem) {
             return it;
         }
 
-        if (isLess(*finded_node, *it)) {
+        if (isLess(elem, it->value)) {
             it = it->left_child;
         } else {
             it = it->right_child;
         }
     }
+
     return nullptr;
 }
 
 template<typename T, class IsLess>
+typename Tree<T, IsLess>::iterator Tree<T, IsLess>::lower_bound(const T& data) const {
+    if (FindNode(data)) {
+        return typename Tree<T, IsLess>::iterator(FindNode(data)->next);
+    }
+
+    Node<T>* curNode = findMin(root);
+    while (curNode) {
+        if (curNode->value > data) {
+            return typename Tree<T, IsLess>::iterator(curNode);
+        }
+        curNode = curNode->next;
+    }
+    return typename Tree<T, IsLess>::iterator(nullptr);
+}
+
+template<typename T, class IsLess>
 Node<T>* Tree<T, IsLess>::findLowerBound(const T& data) const {
-    return Find(data)->next;
+    if (FindNode(data)) {
+        return FindNode(data)->next;
+    }
+
+    Node<T>* curNode = findMin(root);
+    while (curNode) {
+        if (curNode->value > data) {
+            return curNode;
+        }
+        curNode = curNode->next;
+    }
+    return nullptr;
 }
 
 template<typename T, class IsLess>
@@ -98,86 +142,7 @@ bool Tree<T, IsLess>::Has(const T &data) const{
 }
 
 template<typename T, class IsLess>
-typename Tree<T, IsLess>::iterator Tree<T, IsLess>::begin() {
-    if (root) {
-        Node<T>* curNode = root;
-
-        while (curNode->left_child) {
-            curNode = curNode->left_child;
-        }
-        return typename Tree<T, IsLess>::iterator(curNode);
-    }
-
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::iterator Tree<T, IsLess>::end() {
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::iterator Tree<T, IsLess>::rbegin() {
-    if (root) {
-        Node<T>* curNode = root;
-
-        while (curNode->right_child) {
-            curNode = curNode->right_child;
-        }
-        return typename Tree<T, IsLess>::iterator(curNode);
-    }
-
-    // return this->end();
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::iterator Tree<T, IsLess>::rend() {
-    // return --this->begin();
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::const_iterator Tree<T, IsLess>::begin() const {
-    if (root) {
-        Node<T> *curNode = root;
-        while (curNode->left_child) {
-            curNode = curNode->left_child;
-        }
-        return typename Tree<T, IsLess>::const_iterator(curNode);
-    }
-
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::const_iterator Tree<T, IsLess>::end() const {
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::const_iterator Tree<T, IsLess>::rbegin() const {
-    if (root) {
-        Node<T>* curNode = root;
-
-        while (curNode->right_child) {
-            curNode = curNode->right_child;
-        }
-        return typename Tree<T, IsLess>::const_iterator(curNode);
-    }
-
-    // return this->end();
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-typename Tree<T, IsLess>::const_iterator Tree<T, IsLess>::rend() const {
-    // return --this->begin();
-    return nullptr;
-}
-
-template<typename T, class IsLess>
-Node<T>* Tree<T, IsLess>::findMin(Node<T>* node) {
+Node<T>* Tree<T, IsLess>::findMin(Node<T>* node) const {
     while(node->left_child) {
         node = (node->left_child);
     }
@@ -185,7 +150,7 @@ Node<T>* Tree<T, IsLess>::findMin(Node<T>* node) {
 }
 
 template<typename T, class IsLess>
-Node<T>* Tree<T, IsLess>::findMax(Node<T>* node) {
+Node<T>* Tree<T, IsLess>::findMax(Node<T>* node) const {
     while(node->right_child) {
         node = (node->right_child);
     }

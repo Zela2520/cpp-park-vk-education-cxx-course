@@ -2,7 +2,7 @@
 
 
 template<typename T, class IsLess>
-void Tree<T, IsLess>::Add(const T& elem) {
+void Tree<T, IsLess>::insert(const T& elem) {
     if (root->size == 0) {
         root->value = elem;
         ++root->size;
@@ -36,13 +36,13 @@ void Tree<T, IsLess>::Add(const T& elem) {
     }
 
     Balance(saved_parent);
-    addLinks(new_node);
+    insertLinks(new_node);
 }
 
 template<typename T, class IsLess>
-void Tree<T, IsLess>::Erase(const T& elem) {
+void Tree<T, IsLess>::erase(const T& elem) {
 
-    Node<T>* del_node = Find(elem);
+    Node<T>* del_node = FindNode(elem);
     if (!del_node) {
         return;
     }
@@ -101,8 +101,8 @@ void Tree<T, IsLess>::Erase(const T& elem) {
         }
 
         Balance(del_node->left_child);
-
-        if (!del_node->next || !del_node->value) {
+        
+        if (!del_node->next || !del_node->prev) {
             del_node->next = del_node->prev = nullptr;
         } else {
             del_node->prev->next = del_node->next;

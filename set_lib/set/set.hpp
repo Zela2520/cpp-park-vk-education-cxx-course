@@ -6,8 +6,17 @@
 #include <queue>
 #include <memory>
 #include <typeinfo>
+#include <iterator>
 
-#include "iterator.hpp"
+
+template<typename T>
+class IsLessDefault;
+
+template<typename T>
+class ActionDefault;
+
+template<class T, class IsLess = IsLessDefault<T>> class Tree;
+template<class T1> class Node;
 
 template<class T, class IsLess> class Tree;
 
@@ -23,6 +32,38 @@ class Node {
     size_t size;
     T1 value;
 
+    // Helpfull classes
+    struct AvlTreeIterator {
+        using value_type = T1;
+        using difference_type = ptrdiff_t;
+        using pointer = T1*;
+        using reference = T1&;
+        using iterator_category = std::bidirectional_iterator_tag;
+
+        Node<T1> *m_current;
+        Node<T1> *m_prev;
+
+        explicit AvlTreeIterator(Node<T1> *ptr = nullptr, Node<T1> *prev = nullptr);
+        AvlTreeIterator(const AvlTreeIterator &);
+
+        AvlTreeIterator &operator=(const AvlTreeIterator &);
+
+        AvlTreeIterator &operator++();
+        AvlTreeIterator operator++(int);
+        AvlTreeIterator &operator--();
+        AvlTreeIterator operator--(int);
+
+        reference operator*() const;
+        pointer operator->() const;
+
+        bool operator==(AvlTreeIterator other) const;
+        bool operator!=(AvlTreeIterator other) const;
+
+        template<typename T, class IsLess> friend class Tree;
+        template<class> friend class IsLessDefault;
+        template<class> friend class ActionDefault;
+    };
+
 public:
     Node() : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1) {}
     Node(T1 _value) : parent(nullptr), left_child(nullptr), right_child(nullptr), next(nullptr), prev(nullptr), height(1), size(1), value(_value) {}
@@ -30,10 +71,11 @@ public:
         return os << curNode.value;
     }
 
+    T1& operator=(const Node<T1>& other) {return other.value;}
+
     T1 getValue() const {return value;}
 
     template<typename T, class IsLess> friend class Tree;
-    template<class> friend class AvlTreeIterator;
     template<class> friend class IsLessDefault;
     template<class> friend class ActionDefault;
 };
@@ -56,18 +98,18 @@ class Tree {
 
 
     Node<T>* popMin(Node<T>* begin);
-    Node<T>* findMin(Node<T>* targetBranch);
-    Node<T>* findMax(Node<T>* targetBranch);
+    Node<T>* findMin(Node<T>* targetBranch) const;
+    Node<T>* findMax(Node<T>* targetBranch) const;
 
     // links
-    void addLinks(Node<T>* new_node);
+    void insertLinks(Node<T>* new_node);
 
     // copy function
     void copyTree(Node<T>* copyObj, Node<T>* target);
 
 public:
-    using iterator = AvlTreeIterator<Node<T>>;
-    using const_iterator =  AvlTreeIterator<const Node<T>>;
+    using iterator = typename Node<T>::AvlTreeIterator;   
+    using reverse_iterator = std::reverse_iterator<typename Node<T>::AvlTreeIterator>;
 
     Tree(const IsLess& is_less = IsLessDefault<T>());
     template<std::random_access_iterator Iterator>
@@ -77,29 +119,25 @@ public:
     Tree& operator=(const Tree &other);
     ~Tree();
 
-    iterator begin();
-    iterator end();
+    iterator begin() const;
+    iterator end() const;
 
-    iterator rbegin();
-    iterator rend();
+    iterator rbegin() const;
+    iterator rend() const;
 
-    const_iterator begin() const;
-    const_iterator end() const;
-
-    const_iterator rbegin() const;
-    const_iterator rend() const;
-
-    void Add(const T& elem);
-    void Erase(const T& elem);
+    void insert(const T& elem);
+    void erase(const T& elem);
     bool Has(const T &data) const;
 
     Node<T>* Root() const {return root;}
-    bool isEmpty() const {return root == nullptr;}
-    size_t Size() {if (isEmpty()) {return 0;} return root->size;}
+    bool empty() const {if (root == nullptr || root->size == 0) {return true;} return false;}
+    size_t size() {if (empty()) {return 0;} return root->size;}
 
     // search functions
-    Node<T>* Find(const T& elem) const; // +
-    Node<T>* findLowerBound(const T& data) const;
+    iterator find(const T& elem) const; // +
+    Node<T>* FindNode(const T& elem) const; // +
+    Node<T>* findLowerBound(const T& data) const; // +
+    iterator lower_bound(const T& data) const; // +
     Node<T>* getRoot() {return root;} // +
     T getRootData() const {return root->value;} // +
 
@@ -108,6 +146,9 @@ public:
     void bfs();
 };
 
+#include "baseIterator.hpp"
+#include "srcCompare.hpp"
+#include "srcIterator.hpp"
 #include "srcConstructor.hpp"
 #include "srcBalance.hpp"
 #include "srcAccess.hpp"

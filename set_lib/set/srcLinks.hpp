@@ -2,7 +2,7 @@
 
 
 template<typename T, class IsLess>
-void Tree<T, IsLess>::addLinks(Node<T>* new_node) {
+void Tree<T, IsLess>::insertLinks(Node<T>* new_node) {
     if (new_node == root && new_node->left_child && new_node->right_child) {
         new_node->left_child->next = new_node;
         new_node->prev = new_node->left_child;
