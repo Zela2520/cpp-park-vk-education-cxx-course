@@ -5,8 +5,8 @@ typename Tree<T, IsLess>::iterator Tree<T, IsLess>::find(const T& elem) const {
     Node<T>* it = root;
 
     while (it) {
-        if (it->value == elem) {
-            return typename Tree<T, IsLess>::iterator(it);
+        if (!isLess(elem, it->value) && !isLess(it->value, elem)) {
+            return iterator(it);
         }
 
         if (isLess(elem, it->value)) {
@@ -15,7 +15,7 @@ typename Tree<T, IsLess>::iterator Tree<T, IsLess>::find(const T& elem) const {
             it = it->right_child;
         }
     }
-    return typename Tree<T, IsLess>::iterator(nullptr);
+    return iterator(it);
 }
 
 template<typename T, class IsLess>
@@ -23,7 +23,7 @@ Node<T>* Tree<T, IsLess>::FindNode(const T& elem) const {
     Node<T>* it = root;
 
     while (it) {
-        if (it->value == elem) {
+        if (!isLess(it->value, elem) && !isLess(elem, it->value)) {
             return it;
         }
 
@@ -44,8 +44,9 @@ typename Tree<T, IsLess>::iterator Tree<T, IsLess>::lower_bound(const T& data) c
     }
 
     Node<T>* curNode = findMin(root);
+
     while (curNode) {
-        if (curNode->value > data) {
+        if (!isLess(curNode->value, data)) {
             return typename Tree<T, IsLess>::iterator(curNode);
         }
         curNode = curNode->next;

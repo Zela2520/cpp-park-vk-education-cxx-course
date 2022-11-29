@@ -41,20 +41,19 @@ void check_constness() {
 void check_copy_correctness() {
     std::cerr << "check copy... ";
     std::vector<int> elems = {3, 3, -1, 6, 0, 0, 17, -5, 4, 2};
-    auto s1 = std::make_unique<Tree<int>>(elems.begin(), elems.end());
+    Tree<int> s1{3, 3, -1, 6, 0, 0, 17, -5, 4, 2};
     std::set<int> set_elems(elems.begin(), elems.end());
-    Tree<int>* s2 = new Tree<int>;
-    *s2 = *s1;
+    Tree<int> s2;
+    s2 = s1;
+    s2.insert(5);
+    s2.insert(18);
+    s2.insert(-2);
 
-    s2->insert(5);
-    s2->insert(18);
-    s2->insert(-2);
-
-    auto s1_it = s1->begin(), s2_it = s2->begin();
+    auto s1_it = s1.begin(), s2_it = s2.begin();
     auto s_it = set_elems.begin();
 
 
-    while (s1_it != s1->end() || s2_it != s2->end() || s_it != set_elems.end()) {
+    while (s1_it != s1.end() || s2_it != s2.end() || s_it != set_elems.end()) {
         if (*s2_it == 5 || *s2_it == 18 || *s2_it == -2) {
             ++s2_it;
             continue;
@@ -63,35 +62,35 @@ void check_copy_correctness() {
             std::cout << "s1_it: " << *s1_it << "\ts2_it: " << *s2_it << "\ts3_it: " << *s_it << std::endl;
             fail("fail after copy construction and insertions");
         }
-            
+
         ++s1_it, ++s2_it, ++s_it;
     }
 
-    *s1 = s2;
-    s2->insert(19);
-    auto cur_end = s2->end();
+    s1 = s2;
+    std::cout << "fail after copy" <<std::endl;
+    s2.insert(19);
+    auto cur_end = s2.end();
     --cur_end;
-    s1_it = s1->begin(), s2_it = s2->begin();
-    while (s1_it != s1->end() || s2_it != cur_end) {
+    s1_it = s1.begin(), s2_it = s2.begin();
+    while (s1_it != s1.end() || s2_it != cur_end) {
         if (*s1_it != *s2_it) {
+            std::cout << "here1" << std::endl;
             fail("wrong = operator");
         }
         ++s1_it, ++s2_it;
     }
 
-    *s1 = *s1 = s2;
-    s1_it = s1->begin(), s2_it = s2->begin();
+    s1 = s1 = s2;
+    s1_it = s1.begin(), s2_it = s2.begin();
 
-    while (s1_it != s1->end() || s2_it != s2->end()) {
+    while (s1_it != s1.end() || s2_it != s2.end()) {
         if (*s1_it != *s2_it) {
+            std::cout << "cnaslcnlscn" << std::endl;
             fail("wrong = operator");
         }
         ++s1_it, ++s2_it;
     }
     std::cerr << "ok!\n";
-
-    delete s2;
-    s2 = nullptr;
 }
 
 /* check if class correctly handles empty set */
@@ -195,51 +194,58 @@ struct StrangeInt {
 int StrangeInt::counter;
 
 /* check if class uses only < for elements comparing */
-// void check_operator_less() {
-//     std::cerr << "check operator <... ";
+void check_operator_less() {
+    std::cerr << "check operator <... ";
 
-//     Tree<StrangeInt> s{-5, -3, -6, 13, 7, 1000, 963};
-//     auto it = s.lower_bound(999);
-//     ++it;
-//     if (it != s.end())
-//         fail("wrong ++ for iterator");
-//     std::cerr << "ok!\n";
-// }
+    Tree<StrangeInt> s{-5, -3, -6, 13, 7, 1000, 963};
+    auto it = s.lower_bound(999);
+    ++it;
+    if (it != s.end())
+        fail("wrong ++ for iterator");
+    std::cerr << "ok!\n";
+}
 // /* check if class correctly implements destructor */
-// void check_destructor() {
-//     std::cerr << "check destructor... ";
-//     StrangeInt::init();
-//     {
-//         Tree<StrangeInt> s{5, 4, 3, 2, 1, 0};
-//         if (s.size() != 6)
-//             fail("wrong size");
-//     }
-//     if (StrangeInt::counter)
-//         fail("wrong destructor (or constructors)");
-//     {
-//         Tree<StrangeInt> s{-3, 3, -2, 2, -1, 1};
-//         Tree<StrangeInt> s1(s);
-//         s1.insert(0);
-//         Tree<StrangeInt> s2(s1);
-//         if (s1.find(0) == s1.end())
-//             fail("wrong find");
-//         s1 = s;
-//         if (s1.find(0) != s1.end())
-//             fail("wrong find");
-//     }
-//     if (StrangeInt::counter)
-//         fail("wrong destructor (or constructors)");
-//     std::cerr << "ok!\n";
-// }
+void check_destructor() {
+    std::cerr << "check destructor... ";
+    StrangeInt::init();
+    {
+        Tree<StrangeInt> s{5, 4, 3, 2, 1, 0};
+        if (s.size() != 6)
+            fail("wrong size");
+    }
+    if (StrangeInt::counter)
+        fail("wrong destructor (or constructors)");
+    {
+        Tree<StrangeInt> s{-3, 3, -2, 2, -1, 1};
+        Tree<StrangeInt> s1(&s);
+        s1.insert(0);
+        Tree<StrangeInt> s2(&s1);
+        if (s1.find(0) == s1.end()) {
+            std::cout << "here" << std::endl;
+            fail("wrong find");
+        }
+
+        s1 = s;
+
+        if (s1.find(0) != s1.end()) {
+            std::cout << *s1.find(0) << std::endl;
+            fail("wrong find");
+        }
+
+    }
+    if (StrangeInt::counter)
+        fail("wrong destructor (or constructors)");
+    std::cerr << "ok!\n";
+}
 
 void run_all() {
     check_constness();
+    check_copy_correctness();
     check_empty();
     check_iterators();
-    check_copy_correctness();
     check_erase();
-    // check_operator_less();
-    // check_destructor();
+    check_operator_less();
+    check_destructor();
 }
 
 

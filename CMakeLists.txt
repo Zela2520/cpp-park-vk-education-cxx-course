@@ -9,7 +9,8 @@ option(TEST "Test options" ON)
 option(MEMTEST "Memtest options" ON)
 option(COV "Coverage options" ON)
 
-set(RELEASE_CXX_FLAGS "-Wall -Wextra -Wpedantic -Werror -Wpedantic")
+# -Wall -Wextra -Wpedantic -Werror
+set(RELEASE_CXX_FLAGS " -Wno-error=deprecated-copy")
 set(DEBUG_CXX_FLAGS "-g -O0")
 set(TEST_CXX_FLAGS "-fprofile-arcs -ftest-coverage -fPIC -pthread -lgtest")
 set(LINKER_CXX_FLAGS "-coverage -lgcov")

@@ -1,15 +1,15 @@
 #pragma once  // pragma once
 
-template<typename T>
-Node<T>::AvlTreeIterator::AvlTreeIterator(Node<T> *ptr, Node<T> *prev) : m_current{ptr}, m_prev{prev} {}
+template<class T, class NodeComparator>
+Node<T, NodeComparator>::AvlTreeIterator::AvlTreeIterator(Node<T, NodeComparator> *ptr, Node<T, NodeComparator> *prev) : m_current{ptr}, m_prev{prev} {}
 
 
-template<typename T>
-Node<T>::AvlTreeIterator::AvlTreeIterator(const AvlTreeIterator &other) : m_current{other.m_current}, m_prev{other.m_prev} {}
+template<class T, class NodeComparator>
+Node<T, NodeComparator>::AvlTreeIterator::AvlTreeIterator(const AvlTreeIterator &other) : m_current{other.m_current}, m_prev{other.m_prev} {}
 
 
-template<class T>
-typename Node<T>::AvlTreeIterator &Node<T>::AvlTreeIterator::operator=(const AvlTreeIterator &other) {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator &Node<T, NodeComparator>::AvlTreeIterator::operator=(const AvlTreeIterator &other) {
     if (*this != other) {
         m_current = other.m_current;
         m_prev = other.m_prev;
@@ -17,15 +17,15 @@ typename Node<T>::AvlTreeIterator &Node<T>::AvlTreeIterator::operator=(const Avl
     return *this;
 }
 
-template<class T>
-typename Node<T>::AvlTreeIterator &Node<T>::AvlTreeIterator::operator++() {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator &Node<T, NodeComparator>::AvlTreeIterator::operator++() {
     m_prev = m_current;
     m_current = m_current->next;
     return *this;
 }
 
-template<class T>
-typename Node<T>::AvlTreeIterator Node<T>::AvlTreeIterator::operator++(int) {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator Node<T, NodeComparator>::AvlTreeIterator::operator++(int) {
     auto tmp = m_current;
     auto prev = m_prev;
     AvlTreeIterator it(tmp, prev);
@@ -34,8 +34,8 @@ typename Node<T>::AvlTreeIterator Node<T>::AvlTreeIterator::operator++(int) {
     return it;
 }
 
-template<class T>
-typename Node<T>::AvlTreeIterator &Node<T>::AvlTreeIterator::operator--() {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator &Node<T, NodeComparator>::AvlTreeIterator::operator--() {
     if (!m_current) {
         m_current = m_prev;
         m_prev = m_prev->prev;
@@ -48,8 +48,8 @@ typename Node<T>::AvlTreeIterator &Node<T>::AvlTreeIterator::operator--() {
     return *this;
 }
 
-template<class T>
-typename Node<T>::AvlTreeIterator Node<T>::AvlTreeIterator::operator--(int) {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator Node<T, NodeComparator>::AvlTreeIterator::operator--(int) {
     auto tmp = m_current;
     auto prev = m_prev;
     AvlTreeIterator it(tmp, prev);
@@ -65,22 +65,22 @@ typename Node<T>::AvlTreeIterator Node<T>::AvlTreeIterator::operator--(int) {
     return it;
 }
 
-template<class T>
-typename Node<T>::AvlTreeIterator::reference Node<T>::AvlTreeIterator::operator*() const {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator::reference Node<T, NodeComparator>::AvlTreeIterator::operator*() const {
     return m_current->value;
 }
 
-template<class T>
-typename Node<T>::AvlTreeIterator::pointer Node<T>::AvlTreeIterator::operator->() const {
+template<class T, class NodeComparator>
+typename Node<T, NodeComparator>::AvlTreeIterator::pointer Node<T, NodeComparator>::AvlTreeIterator::operator->() const {
     return &m_current->value;
 }
 
-template<class T>
-bool Node<T>::AvlTreeIterator::operator==(AvlTreeIterator other) const {
+template<class T, class NodeComparator>
+bool Node<T, NodeComparator>::AvlTreeIterator::operator==(AvlTreeIterator other) const {
     return other.m_current == m_current;
 }
 
-template<class T>
-bool Node<T>::AvlTreeIterator::operator!=(AvlTreeIterator other) const {
+template<class T, class NodeComparator>
+bool Node<T, NodeComparator>::AvlTreeIterator::operator!=(AvlTreeIterator other) const {
     return other.m_current != m_current;
 }

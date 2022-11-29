@@ -4,20 +4,22 @@
 template<typename T, class IsLess>
 void Tree<T, IsLess>::insert(const T& elem) {
     if (root->size == 0) {
-        root->value = elem;
+        Node<T>* newRoot = new Node<T>(elem);
+        delete root;
+        
+        root = newRoot;
         ++root->size;
         return;
     }
 
     Node<T>* it = root;
-    Node<T>* new_node = new Node<T>;
-    new_node->value = elem;
+    Node<T>* new_node = new Node<T>(elem);
     new_node->height = 1;
 
     Node<T>* saved_parent;
     while (it) {
         saved_parent = it;
-        if (it->getValue() == new_node->getValue()) {
+        if (!isLess(it->getValue(), new_node->getValue()) && !isLess(new_node->getValue(), it->getValue())) {
             delete new_node;
             return;
         }

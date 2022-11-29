@@ -3,7 +3,7 @@ TARGET_2 = build/set_lib/set
 
 .PHONY: all build rebuild check test memtest covtest clean
 
-all: clean check build test memtest covtest
+all: clean check build test covtest
 
 build:
 	./scripts/build.sh

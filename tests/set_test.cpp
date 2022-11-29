@@ -273,7 +273,7 @@ TEST(AlexeiTest, CheckCopyCorrectness) {
         ++s1_it, ++s2_it, ++s_it;
     }
 
-    s1 = s2;
+    s1 = s2; // Тута
     s2.insert(19);
     auto cur_end = s2.end();
     --cur_end;
@@ -291,11 +291,6 @@ TEST(AlexeiTest, CheckCopyCorrectness) {
         EXPECT_EQ(*s1_it, *s2_it);
         ++s1_it, ++s2_it;
     }
-
-    // delete s1;
-    // s1 = nullptr;
-    // delete s2;
-    // s2 = nullptr;
 }
 
 TEST(AlexeiTest, CheckEmpty) {
@@ -354,6 +349,64 @@ TEST(AlexeiTest, CheckErase) {
     s.erase("abacaba");
     s.erase("012");
     EXPECT_TRUE(s.empty() == true);
+}
+
+struct StrangeInt {
+    int x;
+    static int counter;
+    StrangeInt() {
+        ++counter;
+    }
+    StrangeInt(int x): x(x) {
+        ++counter;
+    }
+    StrangeInt(const StrangeInt& rs): x(rs.x) {
+        ++counter;
+    }
+    bool operator <(const StrangeInt& rs) const {
+        return x < rs.x;
+    }
+
+    static void init() {
+        counter = 0;
+    }
+
+    ~StrangeInt() {
+        --counter;
+    }
+
+    friend std::ostream& operator <<(std::ostream& out, const StrangeInt& x) {
+        out << x.x;
+        return out;
+    }
+};
+int StrangeInt::counter;
+
+TEST(AlexeiTest, CheckOperatorLess) {
+    Tree<StrangeInt> s{-5, -3, -6, 13, 7, 1000, 963};
+    auto it = s.lower_bound(999);
+    ++it;
+    EXPECT_TRUE(it == s.end());
+}
+
+TEST(AlexeiTest, CheckDestructor) {
+    StrangeInt::init();
+    {
+        Tree<StrangeInt> s{5, 4, 3, 2, 1, 0};
+        EXPECT_EQ(s.size(), 6);
+    }
+    EXPECT_EQ(StrangeInt::counter, 0);
+    {
+        Tree<StrangeInt> s{-3, 3, -2, 2, -1, 1};
+        Tree<StrangeInt> s1(&s);
+        s1.insert(0);
+        Tree<StrangeInt> s2(&s1);
+        EXPECT_TRUE(s1.find(0) != s1.end());
+
+        s1 = s;
+        EXPECT_TRUE(s1.find(0) == s1.end());
+    }
+    EXPECT_EQ(StrangeInt::counter, 0);
 }
 
 int main(int argc, char **argv) {

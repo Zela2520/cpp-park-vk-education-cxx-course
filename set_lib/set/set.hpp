@@ -13,20 +13,21 @@ template<typename T>
 class IsLessDefault;
 
 template<typename T>
+class NodeComparatorDefault;
+
+template<typename T>
 class ActionDefault;
 
 template<class T, class IsLess = IsLessDefault<T>> class Tree;
-template<class T1> class Node;
 
-template<class T, class IsLess> class Tree;
-
-template<typename T1>
+template<typename T1, class NodeComparator = NodeComparatorDefault<T1>>
 class Node {
-    Node<T1>* parent;
-    Node<T1>* left_child;
-    Node<T1>* right_child;
-    Node<T1>* next;
-    Node<T1>* prev;
+    Node<T1, NodeComparator>* parent;
+    Node<T1, NodeComparator>* left_child;
+    Node<T1, NodeComparator>* right_child;
+    Node<T1, NodeComparator>* next;
+    Node<T1, NodeComparator>* prev;
+    NodeComparator comp;
 
     int height;
     size_t size;
@@ -40,10 +41,10 @@ class Node {
         using reference = T1&;
         using iterator_category = std::bidirectional_iterator_tag;
 
-        Node<T1> *m_current;
-        Node<T1> *m_prev;
+        Node<T1, NodeComparator> *m_current;
+        Node<T1, NodeComparator> *m_prev;
 
-        explicit AvlTreeIterator(Node<T1> *ptr = nullptr, Node<T1> *prev = nullptr);
+        explicit AvlTreeIterator(Node<T1, NodeComparator> *ptr = nullptr, Node<T1, NodeComparator> *prev = nullptr);
         AvlTreeIterator(const AvlTreeIterator &);
 
         AvlTreeIterator &operator=(const AvlTreeIterator &);
@@ -70,10 +71,13 @@ public:
     friend std::ostream &operator<< (std::ostream &os, const Node &curNode) {
         return os << curNode.value;
     }
-
-    T1& operator=(const Node<T1>& other) {return other.value;}
+    Node(const Node& rs): value(rs.value) {}
 
     T1 getValue() const {return value;}
+
+    bool operator<(const Node& rs) const {return comp(this->value, rs.value);}
+    bool operator==(const Node& rs) const {return !comp(this->value, rs.value) && !comp(rs.value, this->value);}
+    bool operator>(const Node& rs) const {return !comp(this->value, rs.value);}
 
     template<typename T, class IsLess> friend class Tree;
     template<class> friend class IsLessDefault;
@@ -112,12 +116,13 @@ public:
     using reverse_iterator = std::reverse_iterator<typename Node<T>::AvlTreeIterator>;
 
     Tree(const IsLess& is_less = IsLessDefault<T>());
-    template<std::random_access_iterator Iterator>
-    Tree(Iterator begin, Iterator end);
+   template<std::random_access_iterator Iterator>
+   Tree(Iterator begin, Iterator end);
     Tree(const std::initializer_list<T> &list);
     Tree(const Tree *other);
     Tree& operator=(const Tree &other);
     ~Tree();
+    void destroyTree(Node<T>* curNode);
 
     iterator begin() const;
     iterator end() const;
@@ -130,7 +135,7 @@ public:
     bool Has(const T &data) const;
 
     Node<T>* Root() const {return root;}
-    bool empty() const {if (root == nullptr || root->size == 0) {return true;} return false;}
+    bool empty() const {if (!root || (root && root->size == 0)) {return true;} return false;}
     size_t size() {if (empty()) {return 0;} return root->size;}
 
     // search functions
